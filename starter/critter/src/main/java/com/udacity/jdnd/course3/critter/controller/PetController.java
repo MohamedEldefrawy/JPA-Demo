@@ -32,8 +32,12 @@ public class PetController {
     }
 
     @GetMapping("/{petId}")
-    public PetDTO getPet(@PathVariable long petId) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<PetDTO> getPet(@PathVariable long petId) {
+
+        Pet selectedPet = this.petService.getPet(petId);
+        if (selectedPet == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(selectedPet.toPetDto(), HttpStatus.OK);
     }
 
     @GetMapping
