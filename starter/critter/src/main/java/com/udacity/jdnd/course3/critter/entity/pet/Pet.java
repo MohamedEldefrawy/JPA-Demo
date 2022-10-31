@@ -1,5 +1,6 @@
 package com.udacity.jdnd.course3.critter.entity.pet;
 
+import com.udacity.jdnd.course3.critter.dto.pet.PetDTO;
 import com.udacity.jdnd.course3.critter.entity.user.User;
 
 import javax.persistence.*;
@@ -68,5 +69,16 @@ public class Pet {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public PetDTO toPetDto() {
+        PetDTO petDTO = new PetDTO();
+        petDTO.setName(this.getName());
+        petDTO.setType(this.getType());
+        petDTO.setId(this.getId());
+        petDTO.setNotes(this.getNotes());
+        petDTO.setBirthDate(this.getBirthDate());
+        petDTO.setOwner(this.getUser());
+        return petDTO;
     }
 }

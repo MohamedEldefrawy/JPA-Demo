@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -71,13 +72,13 @@ public class CritterFunctionalTest {
         CustomerDTO newCustomer = userController.saveCustomer(customerDTO).getBody();
 
         PetDTO petDTO = createPetDTO();
-        petDTO.setOwnerId(newCustomer.getId());
-        PetDTO newPet = petController.savePet(petDTO);
+        petDTO.setOwner(newCustomer.toCustomer());
+        PetDTO newPet = petController.savePet(petDTO).getBody();
 
         //make sure pet contains customer id
         PetDTO retrievedPet = petController.getPet(newPet.getId());
         Assertions.assertEquals(retrievedPet.getId(), newPet.getId());
-        Assertions.assertEquals(retrievedPet.getOwnerId(), newCustomer.getId());
+        Assertions.assertEquals(retrievedPet.getOwner().getId(), newCustomer.getId());
 
         //make sure you can retrieve pets by owner
         List<PetDTO> pets = petController.getPetsByOwner(newCustomer.getId());
@@ -96,15 +97,15 @@ public class CritterFunctionalTest {
         CustomerDTO newCustomer = userController.saveCustomer(customerDTO).getBody();
 
         PetDTO petDTO = createPetDTO();
-        petDTO.setOwnerId(newCustomer.getId());
-        PetDTO newPet = petController.savePet(petDTO);
+        petDTO.setOwner(newCustomer.toCustomer());
+        PetDTO newPet = petController.savePet(petDTO).getBody();
         petDTO.setType(PetType.DOG);
         petDTO.setName("DogName");
-        PetDTO newPet2 = petController.savePet(petDTO);
+        PetDTO newPet2 = petController.savePet(petDTO).getBody();
 
         List<PetDTO> pets = petController.getPetsByOwner(newCustomer.getId());
         Assertions.assertEquals(pets.size(), 2);
-        Assertions.assertEquals(pets.get(0).getOwnerId(), newCustomer.getId());
+        Assertions.assertEquals(pets.get(0).getOwner().getId(), newCustomer.getId());
         Assertions.assertEquals(pets.get(0).getId(), newPet.getId());
     }
 
@@ -114,8 +115,8 @@ public class CritterFunctionalTest {
         CustomerDTO newCustomer = userController.saveCustomer(customerDTO).getBody();
 
         PetDTO petDTO = createPetDTO();
-        petDTO.setOwnerId(newCustomer.getId());
-        PetDTO newPet = petController.savePet(petDTO);
+        petDTO.setOwner(newCustomer.toCustomer());
+        PetDTO newPet = petController.savePet(petDTO).getBody();
 
         CustomerDTO owner = userController.getOwnerByPet(newPet.getId());
         Assertions.assertEquals(owner.getId(), newCustomer.getId());
@@ -179,8 +180,8 @@ public class CritterFunctionalTest {
         EmployeeDTO employeeDTO = userController.saveEmployee(employeeTemp);
         CustomerDTO customerDTO = userController.saveCustomer(createCustomerDTO()).getBody();
         PetDTO petTemp = createPetDTO();
-        petTemp.setOwnerId(customerDTO.getId());
-        PetDTO petDTO = petController.savePet(petTemp);
+        petTemp.setOwner(customerDTO.toCustomer());
+        PetDTO petDTO = petController.savePet(petTemp).getBody();
 
         LocalDate date = LocalDate.of(2019, 12, 25);
         List<Long> petList = Lists.newArrayList(petDTO.getId());
@@ -289,12 +290,13 @@ public class CritterFunctionalTest {
                     e.setDaysAvailable(Sets.newHashSet(date.getDayOfWeek()));
                     return userController.saveEmployee(e).getId();
                 }).collect(Collectors.toList());
-        CustomerDTO cust = userController.saveCustomer(createCustomerDTO()).getBody();
+        CustomerDTO customerDTO = userController.saveCustomer(createCustomerDTO()).getBody();
         List<Long> petIds = IntStream.range(0, numPets)
                 .mapToObj(i -> createPetDTO())
                 .map(p -> {
-                    p.setOwnerId(cust.getId());
-                    return petController.savePet(p).getId();
+                    assert customerDTO != null;
+                    p.setOwner(customerDTO.toCustomer());
+                    return Objects.requireNonNull(petController.savePet(p).getBody()).getId();
                 }).collect(Collectors.toList());
         return scheduleController.createSchedule(createScheduleDTO(petIds, employeeIds, date, activities));
     }

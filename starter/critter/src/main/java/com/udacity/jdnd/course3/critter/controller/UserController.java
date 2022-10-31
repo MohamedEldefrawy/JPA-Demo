@@ -37,7 +37,7 @@ public class UserController {
         if (createdCustomer == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<>(createdCustomer.toCustomerDto(), HttpStatus.OK);
+        return new ResponseEntity<>(createdCustomer.toCustomerDto(), HttpStatus.CREATED);
     }
 
     @GetMapping("/customer")

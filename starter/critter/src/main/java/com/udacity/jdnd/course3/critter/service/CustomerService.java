@@ -17,8 +17,7 @@ public class CustomerService {
     }
 
     public Customer createCustomer(CustomerDTO customerDTO) {
-        Customer customer = customerDTO.toCustomer();
-        return this.customerRepository.save(customer);
+        return this.customerRepository.save(customerDTO.toCustomer());
     }
 
     public List<CustomerDTO> getCustomers() {
