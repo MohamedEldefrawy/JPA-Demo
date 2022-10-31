@@ -3,15 +3,15 @@ package com.udacity.jdnd.course3.critter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.udacity.jdnd.course3.critter.controller.PetController;
+import com.udacity.jdnd.course3.critter.controller.ScheduleController;
 import com.udacity.jdnd.course3.critter.controller.UserController;
 import com.udacity.jdnd.course3.critter.dto.pet.PetDTO;
+import com.udacity.jdnd.course3.critter.dto.schedule.ScheduleDTO;
 import com.udacity.jdnd.course3.critter.dto.user.CustomerDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeRequestDTO;
-import com.udacity.jdnd.course3.critter.entity.user.EmployeeSkill;
 import com.udacity.jdnd.course3.critter.entity.pet.PetType;
-import com.udacity.jdnd.course3.critter.controller.ScheduleController;
-import com.udacity.jdnd.course3.critter.dto.schedule.ScheduleDTO;
+import com.udacity.jdnd.course3.critter.entity.user.EmployeeSkill;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class CritterFunctionalTest {
     @Test
     public void testCreateCustomer() {
         CustomerDTO customerDTO = createCustomerDTO();
-        CustomerDTO newCustomer = userController.saveCustomer(customerDTO);
+        CustomerDTO newCustomer = userController.saveCustomer(customerDTO).getBody();
         CustomerDTO retrievedCustomer = userController.getAllCustomers().get(0);
         Assertions.assertEquals(newCustomer.getName(), customerDTO.getName());
         Assertions.assertEquals(newCustomer.getId(), retrievedCustomer.getId());
@@ -68,7 +68,7 @@ public class CritterFunctionalTest {
     @Test
     public void testAddPetsToCustomer() {
         CustomerDTO customerDTO = createCustomerDTO();
-        CustomerDTO newCustomer = userController.saveCustomer(customerDTO);
+        CustomerDTO newCustomer = userController.saveCustomer(customerDTO).getBody();
 
         PetDTO petDTO = createPetDTO();
         petDTO.setOwnerId(newCustomer.getId());
@@ -93,7 +93,7 @@ public class CritterFunctionalTest {
     @Test
     public void testFindPetsByOwner() {
         CustomerDTO customerDTO = createCustomerDTO();
-        CustomerDTO newCustomer = userController.saveCustomer(customerDTO);
+        CustomerDTO newCustomer = userController.saveCustomer(customerDTO).getBody();
 
         PetDTO petDTO = createPetDTO();
         petDTO.setOwnerId(newCustomer.getId());
@@ -111,7 +111,7 @@ public class CritterFunctionalTest {
     @Test
     public void testFindOwnerByPet() {
         CustomerDTO customerDTO = createCustomerDTO();
-        CustomerDTO newCustomer = userController.saveCustomer(customerDTO);
+        CustomerDTO newCustomer = userController.saveCustomer(customerDTO).getBody();
 
         PetDTO petDTO = createPetDTO();
         petDTO.setOwnerId(newCustomer.getId());
@@ -177,7 +177,7 @@ public class CritterFunctionalTest {
         EmployeeDTO employeeTemp = createEmployeeDTO();
         employeeTemp.setDaysAvailable(Sets.newHashSet(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY));
         EmployeeDTO employeeDTO = userController.saveEmployee(employeeTemp);
-        CustomerDTO customerDTO = userController.saveCustomer(createCustomerDTO());
+        CustomerDTO customerDTO = userController.saveCustomer(createCustomerDTO()).getBody();
         PetDTO petTemp = createPetDTO();
         petTemp.setOwnerId(customerDTO.getId());
         PetDTO petDTO = petController.savePet(petTemp);
@@ -289,7 +289,7 @@ public class CritterFunctionalTest {
                     e.setDaysAvailable(Sets.newHashSet(date.getDayOfWeek()));
                     return userController.saveEmployee(e).getId();
                 }).collect(Collectors.toList());
-        CustomerDTO cust = userController.saveCustomer(createCustomerDTO());
+        CustomerDTO cust = userController.saveCustomer(createCustomerDTO()).getBody();
         List<Long> petIds = IntStream.range(0, numPets)
                 .mapToObj(i -> createPetDTO())
                 .map(p -> {
