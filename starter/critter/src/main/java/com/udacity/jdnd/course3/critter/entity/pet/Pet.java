@@ -1,18 +1,42 @@
-package com.udacity.jdnd.course3.critter.pet;
+package com.udacity.jdnd.course3.critter.entity.pet;
 
+import com.udacity.jdnd.course3.critter.entity.user.User;
+
+import javax.persistence.*;
 import java.time.LocalDate;
 
-/**
- * Represents the form that pet request and response data takes. Does not map
- * to the database directly.
- */
-public class PetDTO {
+@Entity
+@Table(name = "pets")
+public class Pet {
+
+    @Id
+    @GeneratedValue
     private long id;
     private PetType type;
     private String name;
-    private long ownerId;
     private LocalDate birthDate;
     private String notes;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public PetType getType() {
         return type;
@@ -30,14 +54,6 @@ public class PetDTO {
         this.name = name;
     }
 
-    public long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(long ownerId) {
-        this.ownerId = ownerId;
-    }
-
     public LocalDate getBirthDate() {
         return birthDate;
     }
@@ -52,13 +68,5 @@ public class PetDTO {
 
     public void setNotes(String notes) {
         this.notes = notes;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 }
