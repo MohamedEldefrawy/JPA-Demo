@@ -49,7 +49,7 @@ public class CritterFunctionalTest {
     public void testCreateCustomer() {
         CustomerDTO customerDTO = createCustomerDTO();
         CustomerDTO newCustomer = userController.saveCustomer(customerDTO).getBody();
-        CustomerDTO retrievedCustomer = userController.getAllCustomers().get(0);
+        CustomerDTO retrievedCustomer = userController.getAllCustomers().getBody().get(0);
         Assertions.assertEquals(newCustomer.getName(), customerDTO.getName());
         Assertions.assertEquals(newCustomer.getId(), retrievedCustomer.getId());
         Assertions.assertTrue(retrievedCustomer.getId() > 0);
@@ -85,9 +85,9 @@ public class CritterFunctionalTest {
         Assertions.assertEquals(newPet.getName(), pets.get(0).getName());
 
         //check to make sure customer now also contains pet
-        CustomerDTO retrievedCustomer = userController.getAllCustomers().get(0);
-        Assertions.assertTrue(retrievedCustomer.getPetIds() != null && retrievedCustomer.getPetIds().size() > 0);
-        Assertions.assertEquals(retrievedCustomer.getPetIds().get(0), retrievedPet.getId());
+        CustomerDTO retrievedCustomer = userController.getAllCustomers().getBody().get(0);
+        Assertions.assertTrue(retrievedCustomer.getPets() != null && retrievedCustomer.getPets().size() > 0);
+        Assertions.assertEquals(retrievedCustomer.getPets().get(0).getId(), retrievedPet.getId());
     }
 
     @Test
@@ -119,7 +119,7 @@ public class CritterFunctionalTest {
 
         CustomerDTO owner = userController.getOwnerByPet(newPet.getId());
         Assertions.assertEquals(owner.getId(), newCustomer.getId());
-        Assertions.assertEquals(owner.getPetIds().get(0), newPet.getId());
+        Assertions.assertEquals(owner.getPets().get(0).getId(), newPet.getId());
     }
 
     @Test

@@ -5,6 +5,9 @@ import com.udacity.jdnd.course3.critter.entity.user.Customer;
 import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
@@ -16,5 +19,14 @@ public class CustomerService {
     public Customer createCustomer(CustomerDTO customerDTO) {
         Customer customer = customerDTO.toCustomer();
         return this.customerRepository.save(customer);
+    }
+
+    public List<CustomerDTO> getCustomers() {
+        Iterable<Customer> customerIterable = this.customerRepository.findAll();
+        List<CustomerDTO> customers = new ArrayList<>();
+        customerIterable.forEach(customer -> {
+            customers.add(customer.toCustomerDto());
+        });
+        return customers;
     }
 }
