@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/pet")
 public class PetController {
-
     private final PetService petService;
 
     public PetController(PetService petService) {
@@ -41,12 +40,14 @@ public class PetController {
     }
 
     @GetMapping
-    public List<PetDTO> getPets() {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<PetDTO>> getPets() {
+        List<PetDTO> pets = this.petService.getPets();
+        return new ResponseEntity<>(pets, HttpStatus.OK);
     }
 
     @GetMapping("/owner/{ownerId}")
-    public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<PetDTO>> getPetsByOwner(@PathVariable long ownerId) {
+        List<PetDTO> pets = this.petService.getPetsByOwner(ownerId);
+        return new ResponseEntity<>(pets, HttpStatus.OK);
     }
 }

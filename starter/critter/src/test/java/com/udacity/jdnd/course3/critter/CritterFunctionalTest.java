@@ -81,7 +81,7 @@ public class CritterFunctionalTest {
         Assertions.assertEquals(retrievedPet.getOwner().getId(), newCustomer.getId());
 
         //make sure you can retrieve pets by owner
-        List<PetDTO> pets = petController.getPetsByOwner(newCustomer.getId());
+        List<PetDTO> pets = petController.getPetsByOwner(newCustomer.getId()).getBody();
         Assertions.assertEquals(newPet.getId(), pets.get(0).getId());
         Assertions.assertEquals(newPet.getName(), pets.get(0).getName());
 
@@ -103,7 +103,7 @@ public class CritterFunctionalTest {
         petDTO.setName("DogName");
         PetDTO newPet2 = petController.savePet(petDTO).getBody();
 
-        List<PetDTO> pets = petController.getPetsByOwner(newCustomer.getId());
+        List<PetDTO> pets = petController.getPetsByOwner(newCustomer.getId()).getBody();
         Assertions.assertEquals(pets.size(), 2);
         Assertions.assertEquals(pets.get(0).getOwner().getId(), newCustomer.getId());
         Assertions.assertEquals(pets.get(0).getId(), newPet.getId());
