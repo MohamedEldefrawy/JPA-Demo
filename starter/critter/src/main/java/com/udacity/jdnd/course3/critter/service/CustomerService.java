@@ -26,7 +26,9 @@ public class CustomerService {
     public List<CustomerDTO> getCustomers() {
         Iterable<Customer> customerIterable = this.customerRepository.findAll();
         List<CustomerDTO> customers = new ArrayList<>();
+
         customerIterable.forEach(customer -> {
+            customer.setPets(this.petRepository.findPetsByCustomer(customer));
             customers.add(customer.toCustomerDto());
         });
         return customers;

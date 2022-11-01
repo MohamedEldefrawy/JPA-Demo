@@ -5,7 +5,10 @@ import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
 
 @Entity
@@ -13,7 +16,7 @@ import java.util.List;
 public class Customer extends User {
     private String phoneNumber;
     private String notes;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     private List<Pet> pets = new java.util.ArrayList<>();
 
