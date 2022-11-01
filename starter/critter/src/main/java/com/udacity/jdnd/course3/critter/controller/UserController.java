@@ -3,7 +3,6 @@ package com.udacity.jdnd.course3.critter.controller;
 import com.udacity.jdnd.course3.critter.dto.user.CustomerDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeRequestDTO;
-import com.udacity.jdnd.course3.critter.entity.user.Customer;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +32,11 @@ public class UserController {
     @PostMapping("/customer")
     public ResponseEntity<CustomerDTO> saveCustomer(@RequestBody CustomerDTO customerDTO) {
 
-        Customer createdCustomer = this.customerService.createCustomer(customerDTO);
+        CustomerDTO createdCustomer = this.customerService.createCustomer(customerDTO);
         if (createdCustomer == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<>(createdCustomer.toCustomerDto(), HttpStatus.CREATED);
+        return new ResponseEntity<>(createdCustomer, HttpStatus.CREATED);
     }
 
     @GetMapping("/customer")
@@ -46,8 +45,10 @@ public class UserController {
     }
 
     @GetMapping("/customer/pet/{petId}")
-    public CustomerDTO getOwnerByPet(@PathVariable long petId) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<CustomerDTO> getOwnerByPet(@PathVariable long petId) {
+        CustomerDTO selectedCustomer = this.customerService.getCustomersByPetId(petId);
+        System.out.println(selectedCustomer.toCustomer().getPets());
+        return new ResponseEntity<>(selectedCustomer, HttpStatus.OK);
     }
 
     @PostMapping("/employee")

@@ -1,15 +1,22 @@
 package com.udacity.jdnd.course3.critter.entity.user;
 
 import com.udacity.jdnd.course3.critter.dto.user.CustomerDTO;
+import com.udacity.jdnd.course3.critter.entity.pet.Pet;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "customers")
 public class Customer extends User {
     private String phoneNumber;
     private String notes;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    private List<Pet> pets = new java.util.ArrayList<>();
+
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -27,14 +34,23 @@ public class Customer extends User {
         this.notes = notes;
     }
 
+
     public CustomerDTO toCustomerDto() {
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setId(this.getId());
         customerDTO.setName(this.getName());
         customerDTO.setNotes(this.getNotes());
         customerDTO.setPhoneNumber(this.getPhoneNumber());
-        customerDTO.setPets(customerDTO.getPets());
+        customerDTO.setPets(this.getPets());
 
         return customerDTO;
+    }
+
+    public List<Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
     }
 }

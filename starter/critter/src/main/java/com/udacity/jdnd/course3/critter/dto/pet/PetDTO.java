@@ -2,7 +2,7 @@ package com.udacity.jdnd.course3.critter.dto.pet;
 
 import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import com.udacity.jdnd.course3.critter.entity.pet.PetType;
-import com.udacity.jdnd.course3.critter.entity.user.User;
+import com.udacity.jdnd.course3.critter.entity.user.Customer;
 
 import java.time.LocalDate;
 
@@ -14,7 +14,7 @@ public class PetDTO {
     private long id;
     private PetType type;
     private String name;
-    private User owner;
+    private Customer customer;
     private LocalDate birthDate;
     private String notes;
 
@@ -58,19 +58,19 @@ public class PetDTO {
         this.id = id;
     }
 
-    public User getOwner() {
-        return owner;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Pet toPet() {
         Pet pet = new Pet();
         pet.setId(this.getId());
         pet.setName(this.getName());
-        pet.setUser(this.getOwner());
+        pet.setCustomer(this.getCustomer());
         pet.setType(this.getType());
         pet.setBirthDate(this.getBirthDate());
         return pet;

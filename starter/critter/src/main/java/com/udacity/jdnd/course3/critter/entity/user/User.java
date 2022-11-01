@@ -15,10 +15,6 @@ public class User {
 
     private String name;
 
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Pet> pets;
-
     public Long getId() {
         return id;
     }

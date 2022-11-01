@@ -37,7 +37,7 @@ public class PetService {
 
     public List<PetDTO> getPetsByOwner(Long ownerId) {
         List<PetDTO> pets = new ArrayList<>();
-        this.petRepository.findPetsByUser(this.customerRepository.findById(ownerId).get()).forEach(pet -> pets.add(pet.toPetDto()));
+        this.petRepository.findPetsByCustomer(this.customerRepository.findById(ownerId).get()).forEach(pet -> pets.add(pet.toPetDto()));
         return pets;
     }
 }

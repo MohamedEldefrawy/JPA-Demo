@@ -1,7 +1,9 @@
 package com.udacity.jdnd.course3.critter.entity.pet;
 
 import com.udacity.jdnd.course3.critter.dto.pet.PetDTO;
-import com.udacity.jdnd.course3.critter.entity.user.User;
+import com.udacity.jdnd.course3.critter.entity.user.Customer;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -18,16 +20,17 @@ public class Pet {
     private LocalDate birthDate;
     private String notes;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "customer_id")
+    @Fetch(FetchMode.JOIN)
+    private Customer customer;
 
-    public User getUser() {
-        return user;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCustomer(Customer user) {
+        this.customer = user;
     }
 
 
@@ -78,7 +81,7 @@ public class Pet {
         petDTO.setId(this.getId());
         petDTO.setNotes(this.getNotes());
         petDTO.setBirthDate(this.getBirthDate());
-        petDTO.setOwner(this.getUser());
+        petDTO.setCustomer(this.getCustomer());
         return petDTO;
     }
 }
