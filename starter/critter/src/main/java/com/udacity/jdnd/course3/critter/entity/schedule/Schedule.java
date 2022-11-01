@@ -27,5 +27,5 @@ public class Schedule {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     private List<Pet> pets;
-    private LocalDate date;
+    private LocalDate day;
 }

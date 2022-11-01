@@ -1,0 +1,10 @@
+insert into skills
+values (1, "PETTING");
+insert into skills
+values (2, "WALKING");
+insert into skills
+values (3, "FEEDING");
+insert into skills
+values (4, "MEDICATING");
+insert into skills
+values (5, "SHAVING");
