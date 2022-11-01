@@ -3,15 +3,15 @@ package com.udacity.jdnd.course3.critter.controller;
 import com.udacity.jdnd.course3.critter.dto.user.CustomerDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeRequestDTO;
+import com.udacity.jdnd.course3.critter.entity.schedule.Day;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
+import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.DayOfWeek;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Handles web requests related to Users.
@@ -24,9 +24,11 @@ import java.util.Set;
 public class UserController {
 
     private final CustomerService customerService;
+    private final EmployeeService employeeService;
 
-    public UserController(CustomerService customerService) {
+    public UserController(CustomerService customerService, EmployeeService employeeService) {
         this.customerService = customerService;
+        this.employeeService = employeeService;
     }
 
     @PostMapping("/customer")
@@ -52,17 +54,26 @@ public class UserController {
     }
 
     @PostMapping("/employee")
-    public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<EmployeeDTO> saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        EmployeeDTO createdEmployee = this.employeeService.createEmployee(employeeDTO);
+        if (createdEmployee == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
+
     }
 
     @PostMapping("/employee/{employeeId}")
-    public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable long employeeId) {
+        EmployeeDTO employee = this.employeeService.getEmployee(employeeId).toEmployeeDto();
+        if (employee == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(employee, HttpStatus.OK);
+
     }
 
     @PutMapping("/employee/{employeeId}")
-    public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
+    public void setAvailability(@RequestBody List<Day> daysAvailable, @PathVariable long employeeId) {
         throw new UnsupportedOperationException();
     }
 

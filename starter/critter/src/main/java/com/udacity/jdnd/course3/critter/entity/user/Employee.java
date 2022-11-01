@@ -1,5 +1,7 @@
 package com.udacity.jdnd.course3.critter.entity.user;
 
+import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
+import com.udacity.jdnd.course3.critter.entity.schedule.Day;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.skill.Skill;
 import org.hibernate.annotations.Fetch;
@@ -7,33 +9,55 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 public class Employee extends User {
 
     @ManyToMany(mappedBy = "employees")
-    @Fetch(FetchMode.JOIN)
-    private Set<Skill> skills;
+    private List<Skill> skills;
 
     @ManyToMany(mappedBy = "employees")
-    @Fetch(FetchMode.JOIN)
-    private Set<Schedule> schedule;
+    private List<Schedule> schedule;
 
 
-    public Set<Skill> getSkills() {
+    @ManyToMany(mappedBy = "employees")
+    private List<Day> days;
+
+    public List<Skill> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<Skill> skills) {
+    public void setSkills(List<Skill> skills) {
         this.skills = skills;
     }
 
-    public Set<Schedule> getSchedule() {
+
+    public EmployeeDTO toEmployeeDto() {
+        EmployeeDTO employeeDTO = new EmployeeDTO();
+        employeeDTO.setName(this.getName());
+        employeeDTO.setId(this.getId());
+        employeeDTO.setSkills(this.getSkills());
+        employeeDTO.setSchedules(this.getSchedule());
+        employeeDTO.setDays(this.getDays());
+
+        return employeeDTO;
+    }
+
+    public List<Schedule> getSchedule() {
         return schedule;
     }
 
-    public void setSchedule(Set<Schedule> schedule) {
+    public void setSchedule(List<Schedule> schedule) {
         this.schedule = schedule;
+    }
+
+    public List<Day> getDays() {
+        return days;
+    }
+
+    public void setDays(List<Day> days) {
+        this.days = days;
     }
 }

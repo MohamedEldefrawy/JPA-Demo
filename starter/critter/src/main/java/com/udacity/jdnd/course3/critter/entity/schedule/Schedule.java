@@ -14,7 +14,7 @@ import java.util.List;
 public class Schedule {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
@@ -27,5 +27,37 @@ public class Schedule {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     private List<Pet> pets;
-    private LocalDate day;
+    private LocalDate date;
+    
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
+    }
+
+    public List<Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate day) {
+        this.date = day;
+    }
 }

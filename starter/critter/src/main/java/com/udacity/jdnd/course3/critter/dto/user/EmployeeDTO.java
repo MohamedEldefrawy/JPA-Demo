@@ -1,8 +1,11 @@
 package com.udacity.jdnd.course3.critter.dto.user;
 
-import com.udacity.jdnd.course3.critter.entity.user.EmployeeSkill;
+import com.udacity.jdnd.course3.critter.entity.schedule.Day;
+import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
+import com.udacity.jdnd.course3.critter.entity.skill.Skill;
+import com.udacity.jdnd.course3.critter.entity.user.Employee;
 
-import java.time.DayOfWeek;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -12,8 +15,10 @@ import java.util.Set;
 public class EmployeeDTO {
     private long id;
     private String name;
-    private Set<EmployeeSkill> skills;
-    private Set<DayOfWeek> daysAvailable;
+    private List<Skill> skills;
+    private List<Schedule> schedules;
+
+    private List<Day> days;
 
     public long getId() {
         return id;
@@ -31,19 +36,37 @@ public class EmployeeDTO {
         this.name = name;
     }
 
-    public Set<EmployeeSkill> getSkills() {
+    public List<Skill> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<EmployeeSkill> skills) {
+    public void setSkills(List<Skill> skills) {
         this.skills = skills;
     }
 
-    public Set<DayOfWeek> getDaysAvailable() {
-        return daysAvailable;
+    public List<Schedule> getSchedules() {
+        return schedules;
     }
 
-    public void setDaysAvailable(Set<DayOfWeek> daysAvailable) {
-        this.daysAvailable = daysAvailable;
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
+    }
+
+    public List<Day> getDays() {
+        return days;
+    }
+
+    public void setDays(List<Day> days) {
+        this.days = days;
+    }
+
+    public Employee toEmployee() {
+        Employee employee = new Employee();
+        employee.setDays(this.getDays());
+        employee.setSchedule(this.getSchedules());
+        employee.setId(this.getId());
+        employee.setName(this.getName());
+        employee.setSkills(this.getSkills());
+        return employee;
     }
 }
