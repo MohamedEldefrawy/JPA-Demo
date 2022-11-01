@@ -1,6 +1,7 @@
 package com.udacity.jdnd.course3.critter.service;
 
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
+import com.udacity.jdnd.course3.critter.entity.schedule.Day;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
 import com.udacity.jdnd.course3.critter.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
@@ -23,5 +24,10 @@ public class EmployeeService {
     public Employee getEmployee(Long employeeId) {
         Optional<Employee> optionalEmployee = this.employeeRepository.findById(employeeId);
         return optionalEmployee.orElse(null);
+    }
+
+    public void setAvailabliity(List<Day> days, Long employeeId) {
+        Optional<Employee> optionalEmployee = this.employeeRepository.findById(employeeId);
+        optionalEmployee.ifPresent(employee -> employee.setDays(days));
     }
 }

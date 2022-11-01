@@ -73,8 +73,9 @@ public class UserController {
     }
 
     @PutMapping("/employee/{employeeId}")
-    public void setAvailability(@RequestBody List<Day> daysAvailable, @PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<Void> setAvailability(@RequestBody List<Day> daysAvailable, @PathVariable long employeeId) {
+        this.employeeService.setAvailabliity(daysAvailable, employeeId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/employee/availability")
