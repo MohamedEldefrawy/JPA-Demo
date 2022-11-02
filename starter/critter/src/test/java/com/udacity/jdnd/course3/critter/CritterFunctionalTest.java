@@ -10,9 +10,11 @@ import com.udacity.jdnd.course3.critter.dto.schedule.ScheduleDTO;
 import com.udacity.jdnd.course3.critter.dto.user.CustomerDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeRequestDTO;
+import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import com.udacity.jdnd.course3.critter.entity.pet.PetType;
 import com.udacity.jdnd.course3.critter.entity.schedule.Day;
 import com.udacity.jdnd.course3.critter.entity.skill.Skill;
+import com.udacity.jdnd.course3.critter.entity.user.Employee;
 import com.udacity.jdnd.course3.critter.repository.DayRepository;
 import com.udacity.jdnd.course3.critter.repository.SkillRepository;
 import org.junit.jupiter.api.Assertions;
@@ -205,8 +207,8 @@ public class CritterFunctionalTest {
         PetDTO petDTO = petController.savePet(petTemp).getBody();
 
         LocalDate date = LocalDate.of(2019, 12, 25);
-        List<Long> petList = Lists.newArrayList(petDTO.getId());
-        List<Long> employeeList = Lists.newArrayList(employeeDTO.getId());
+        List<Pet> petList = Lists.newArrayList(petDTO.toPet());
+        List<Employee> employeeList = Lists.newArrayList(employeeDTO.toEmployee());
         List<Skill> skillSet = Lists.newArrayList(this.skills.get(0));
 
         scheduleController.createSchedule(createScheduleDTO(petList, employeeList, date, skillSet));
@@ -214,8 +216,8 @@ public class CritterFunctionalTest {
 
         Assertions.assertEquals(scheduleDTO.getActivities(), skillSet);
         Assertions.assertEquals(scheduleDTO.getDate(), date);
-        Assertions.assertEquals(scheduleDTO.getEmployeeIds(), employeeList);
-        Assertions.assertEquals(scheduleDTO.getPetIds(), petList);
+        Assertions.assertEquals(scheduleDTO.getEmployees(), employeeList);
+        Assertions.assertEquals(scheduleDTO.getPets(), petList);
     }
 
 //    @Test
@@ -295,10 +297,10 @@ public class CritterFunctionalTest {
         return employeeRequestDTO;
     }
 
-    private static ScheduleDTO createScheduleDTO(List<Long> petIds, List<Long> employeeIds, LocalDate date, List<Skill> activities) {
+    private static ScheduleDTO createScheduleDTO(List<Pet> pets, List<Employee> employees, LocalDate date, List<Skill> activities) {
         ScheduleDTO scheduleDTO = new ScheduleDTO();
-        scheduleDTO.setPetIds(petIds);
-        scheduleDTO.setEmployeeIds(employeeIds);
+        scheduleDTO.setPets(pets);
+        scheduleDTO.setEmployees(employees);
         scheduleDTO.setDate(date);
         scheduleDTO.setActivities(activities);
         return scheduleDTO;
@@ -324,9 +326,9 @@ public class CritterFunctionalTest {
 //    }
 
     private static void compareSchedules(ScheduleDTO sched1, ScheduleDTO sched2) {
-        Assertions.assertEquals(sched1.getPetIds(), sched2.getPetIds());
+        Assertions.assertEquals(sched1.getPets(), sched2.getPets());
         Assertions.assertEquals(sched1.getActivities(), sched2.getActivities());
-        Assertions.assertEquals(sched1.getEmployeeIds(), sched2.getEmployeeIds());
+        Assertions.assertEquals(sched1.getEmployees(), sched2.getEmployees());
         Assertions.assertEquals(sched1.getDate(), sched2.getDate());
     }
 
