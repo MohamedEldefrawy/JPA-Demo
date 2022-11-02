@@ -193,29 +193,30 @@ public class CritterFunctionalTest {
         Assertions.assertEquals(eIds2, eIds2expected);
     }
 
-//    @Test
-//    public void testSchedulePetsForServiceWithEmployee() {
-//        EmployeeDTO employeeTemp = createEmployeeDTO();
-//        employeeTemp.setDaysAvailable(Sets.newHashSet(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY));
-//        EmployeeDTO employeeDTO = userController.saveEmployee(employeeTemp);
-//        CustomerDTO customerDTO = userController.saveCustomer(createCustomerDTO()).getBody();
-//        PetDTO petTemp = createPetDTO();
-//        petTemp.setCustomer(customerDTO.toCustomer());
-//        PetDTO petDTO = petController.savePet(petTemp).getBody();
-//
-//        LocalDate date = LocalDate.of(2019, 12, 25);
-//        List<Long> petList = Lists.newArrayList(petDTO.getId());
-//        List<Long> employeeList = Lists.newArrayList(employeeDTO.getId());
-//        Set<EmployeeSkill> skillSet = Sets.newHashSet(EmployeeSkill.PETTING);
-//
-//        scheduleController.createSchedule(createScheduleDTO(petList, employeeList, date, skillSet));
-//        ScheduleDTO scheduleDTO = scheduleController.getAllSchedules().get(0);
-//
-//        Assertions.assertEquals(scheduleDTO.getActivities(), skillSet);
-//        Assertions.assertEquals(scheduleDTO.getDate(), date);
-//        Assertions.assertEquals(scheduleDTO.getEmployeeIds(), employeeList);
-//        Assertions.assertEquals(scheduleDTO.getPetIds(), petList);
-//    }
+    @Test
+    public void testSchedulePetsForServiceWithEmployee() {
+        EmployeeDTO employeeTemp = createEmployeeDTO();
+        employeeTemp.setDays(Lists.newArrayList(this.days.get(0), this.days.get(1), this.days.get(2)));
+        ;
+        EmployeeDTO employeeDTO = userController.saveEmployee(employeeTemp).getBody();
+        CustomerDTO customerDTO = userController.saveCustomer(createCustomerDTO()).getBody();
+        PetDTO petTemp = createPetDTO();
+        petTemp.setCustomer(customerDTO.toCustomer());
+        PetDTO petDTO = petController.savePet(petTemp).getBody();
+
+        LocalDate date = LocalDate.of(2019, 12, 25);
+        List<Long> petList = Lists.newArrayList(petDTO.getId());
+        List<Long> employeeList = Lists.newArrayList(employeeDTO.getId());
+        List<Skill> skillSet = Lists.newArrayList(this.skills.get(0));
+
+        scheduleController.createSchedule(createScheduleDTO(petList, employeeList, date, skillSet));
+        ScheduleDTO scheduleDTO = scheduleController.getAllSchedules().get(0);
+
+        Assertions.assertEquals(scheduleDTO.getActivities(), skillSet);
+        Assertions.assertEquals(scheduleDTO.getDate(), date);
+        Assertions.assertEquals(scheduleDTO.getEmployeeIds(), employeeList);
+        Assertions.assertEquals(scheduleDTO.getPetIds(), petList);
+    }
 
 //    @Test
 //    public void testFindScheduleByEntities() {
