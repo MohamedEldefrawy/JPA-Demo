@@ -4,6 +4,7 @@ import com.udacity.jdnd.course3.critter.entity.user.Employee;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "days")
@@ -54,5 +55,18 @@ public class Day {
     public Day(Long id, String day) {
         this.id = id;
         this.day = day;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Day day1 = (Day) o;
+        return id.equals(day1.id) && day.equals(day1.day);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, day);
     }
 }

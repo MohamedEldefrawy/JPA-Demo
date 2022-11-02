@@ -4,13 +4,10 @@ import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.entity.schedule.Day;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.skill.Skill;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Employee extends User {

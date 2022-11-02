@@ -79,8 +79,11 @@ public class UserController {
     }
 
     @GetMapping("/employee/availability")
-    public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<EmployeeDTO>> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
+        List<EmployeeDTO> employees = this.employeeService.findEmployeesByAvailabilityAndSkills(employeeDTO);
+        if (employees.size() == 0)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
 }

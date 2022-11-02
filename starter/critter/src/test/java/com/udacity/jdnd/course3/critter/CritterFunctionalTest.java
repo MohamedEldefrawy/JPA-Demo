@@ -13,7 +13,6 @@ import com.udacity.jdnd.course3.critter.dto.user.EmployeeRequestDTO;
 import com.udacity.jdnd.course3.critter.entity.pet.PetType;
 import com.udacity.jdnd.course3.critter.entity.schedule.Day;
 import com.udacity.jdnd.course3.critter.entity.skill.Skill;
-import com.udacity.jdnd.course3.critter.entity.user.EmployeeSkill;
 import com.udacity.jdnd.course3.critter.repository.DayRepository;
 import com.udacity.jdnd.course3.critter.repository.SkillRepository;
 import org.junit.jupiter.api.Assertions;
@@ -26,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This is a set of functional tests to validate the basic capabilities desired for this application.
@@ -155,43 +156,43 @@ public class CritterFunctionalTest {
         Assertions.assertEquals(availability, emp2.getDays());
     }
 
-//    @Test
-//    public void testFindEmployeesByServiceAndTime() {
-//        EmployeeDTO emp1 = createEmployeeDTO();
-//        EmployeeDTO emp2 = createEmployeeDTO();
-//        EmployeeDTO emp3 = createEmployeeDTO();
-//
-//        emp1.setDaysAvailable(Sets.newHashSet(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY));
-//        emp2.setDaysAvailable(Sets.newHashSet(DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY));
-//        emp3.setDaysAvailable(Sets.newHashSet(DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY));
-//
-//        emp1.setSkills(Sets.newHashSet(EmployeeSkill.FEEDING, EmployeeSkill.PETTING));
-//        emp2.setSkills(Sets.newHashSet(EmployeeSkill.PETTING, EmployeeSkill.WALKING));
-//        emp3.setSkills(Sets.newHashSet(EmployeeSkill.WALKING, EmployeeSkill.SHAVING));
-//
-//        EmployeeDTO emp1n = userController.saveEmployee(emp1);
-//        EmployeeDTO emp2n = userController.saveEmployee(emp2);
-//        EmployeeDTO emp3n = userController.saveEmployee(emp3);
-//
-//        //make a request that matches employee 1 or 2
-//        EmployeeRequestDTO er1 = new EmployeeRequestDTO();
-//        er1.setDate(LocalDate.of(2019, 12, 25)); //wednesday
-//        er1.setSkills(Sets.newHashSet(EmployeeSkill.PETTING));
-//
-//        Set<Long> eIds1 = userController.findEmployeesForService(er1).stream().map(EmployeeDTO::getId).collect(Collectors.toSet());
-//        Set<Long> eIds1expected = Sets.newHashSet(emp1n.getId(), emp2n.getId());
-//        Assertions.assertEquals(eIds1, eIds1expected);
-//
-//        //make a request that matches only employee 3
-//        EmployeeRequestDTO er2 = new EmployeeRequestDTO();
-//        er2.setDate(LocalDate.of(2019, 12, 27)); //friday
-//        er2.setSkills(Sets.newHashSet(EmployeeSkill.WALKING, EmployeeSkill.SHAVING));
-//
-//        Set<Long> eIds2 = userController.findEmployeesForService(er2).stream().map(EmployeeDTO::getId).collect(Collectors.toSet());
-//        Set<Long> eIds2expected = Sets.newHashSet(emp3n.getId());
-//        Assertions.assertEquals(eIds2, eIds2expected);
-//    }
-//
+    @Test
+    public void testFindEmployeesByServiceAndTime() {
+        EmployeeDTO emp1 = createEmployeeDTO();
+        EmployeeDTO emp2 = createEmployeeDTO();
+        EmployeeDTO emp3 = createEmployeeDTO();
+
+        emp1.setDays(Lists.newArrayList(this.days.get(0), this.days.get(1), this.days.get(2)));
+        emp2.setDays(Lists.newArrayList(this.days.get(2), this.days.get(3), this.days.get(4)));
+        emp3.setDays(Lists.newArrayList(this.days.get(4), this.days.get(5), this.days.get(6)));
+
+        emp1.setSkills(Lists.newArrayList(this.skills.get(0), this.skills.get(1)));
+        emp2.setSkills(Lists.newArrayList(this.skills.get(1), this.skills.get(2)));
+        emp3.setSkills(Lists.newArrayList(this.skills.get(3)));
+
+        EmployeeDTO emp1n = userController.saveEmployee(emp1).getBody();
+        EmployeeDTO emp2n = userController.saveEmployee(emp2).getBody();
+        EmployeeDTO emp3n = userController.saveEmployee(emp3).getBody();
+
+        //make a request that matches employee 1 or 2
+        EmployeeRequestDTO er1 = new EmployeeRequestDTO();
+        er1.setDate(LocalDate.of(2019, 12, 25)); //wednesday
+        er1.setSkills(Lists.newArrayList(this.skills.get(0), this.skills.get(1)));
+
+        Set<Long> eIds1 = userController.findEmployeesForService(er1).getBody().stream().map(EmployeeDTO::getId).collect(Collectors.toSet());
+        Set<Long> eIds1expected = Sets.newHashSet(emp1n.getId(), emp2n.getId());
+        Assertions.assertEquals(eIds1, eIds1expected);
+
+        //make a request that matches only employee 3
+        EmployeeRequestDTO er2 = new EmployeeRequestDTO();
+        er2.setDate(LocalDate.of(2019, 12, 27)); //friday
+        er2.setSkills(Lists.newArrayList(this.skills.get(3)));
+
+        Set<Long> eIds2 = userController.findEmployeesForService(er2).getBody().stream().map(EmployeeDTO::getId).collect(Collectors.toSet());
+        Set<Long> eIds2expected = Sets.newHashSet(emp3n.getId());
+        Assertions.assertEquals(eIds2, eIds2expected);
+    }
+
 //    @Test
 //    public void testSchedulePetsForServiceWithEmployee() {
 //        EmployeeDTO employeeTemp = createEmployeeDTO();
@@ -286,10 +287,10 @@ public class CritterFunctionalTest {
         return petDTO;
     }
 
-    private static EmployeeRequestDTO createEmployeeRequestDTO() {
+    private EmployeeRequestDTO createEmployeeRequestDTO() {
         EmployeeRequestDTO employeeRequestDTO = new EmployeeRequestDTO();
         employeeRequestDTO.setDate(LocalDate.of(2019, 12, 25));
-        employeeRequestDTO.setSkills(Sets.newHashSet(EmployeeSkill.FEEDING, EmployeeSkill.WALKING));
+        employeeRequestDTO.setSkills(Lists.newArrayList(this.skills.get(0), this.skills.get(1)));
         return employeeRequestDTO;
     }
 

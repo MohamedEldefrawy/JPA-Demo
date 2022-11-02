@@ -1,8 +1,9 @@
 package com.udacity.jdnd.course3.critter.dto.user;
 
-import com.udacity.jdnd.course3.critter.entity.user.EmployeeSkill;
+import com.udacity.jdnd.course3.critter.entity.skill.Skill;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -10,14 +11,14 @@ import java.util.Set;
  * to the database directly.
  */
 public class EmployeeRequestDTO {
-    private Set<EmployeeSkill> skills;
+    private List<Skill> skills;
     private LocalDate date;
 
-    public Set<EmployeeSkill> getSkills() {
+    public List<Skill> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<EmployeeSkill> skills) {
+    public void setSkills(List<Skill> skills) {
         this.skills = skills;
     }
 
