@@ -1,10 +1,12 @@
 package com.udacity.jdnd.course3.critter.dto.user;
 
 import com.udacity.jdnd.course3.critter.entity.schedule.Day;
+import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.skill.Skill;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the form that employee request and response data takes. Does not map
@@ -14,6 +16,7 @@ public class EmployeeDTO {
     private long id;
     private String name;
     private List<Skill> skills;
+    private List<Schedule> schedules;
 
     private List<Day> days;
 
@@ -41,6 +44,13 @@ public class EmployeeDTO {
         this.skills = skills;
     }
 
+    public List<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
+    }
 
     public List<Day> getDays() {
         return days;
@@ -53,6 +63,7 @@ public class EmployeeDTO {
     public Employee toEmployee() {
         Employee employee = new Employee();
         employee.setDays(this.getDays());
+        employee.setSchedule(this.getSchedules());
         employee.setId(this.getId());
         employee.setName(this.getName());
         employee.setSkills(this.getSkills());
