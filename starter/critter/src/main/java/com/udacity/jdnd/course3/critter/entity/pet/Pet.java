@@ -1,7 +1,6 @@
 package com.udacity.jdnd.course3.critter.entity.pet;
 
 import com.udacity.jdnd.course3.critter.dto.pet.PetDTO;
-import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.user.Customer;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -24,11 +23,6 @@ public class Pet {
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "customer_id")
     private Customer customer;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "schedule_id")
-    @Fetch(FetchMode.JOIN)
-    private Schedule schedule;
 
     public Customer getCustomer() {
         return customer;

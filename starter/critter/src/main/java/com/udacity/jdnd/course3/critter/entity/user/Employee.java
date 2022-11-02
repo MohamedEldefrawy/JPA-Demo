@@ -2,7 +2,6 @@ package com.udacity.jdnd.course3.critter.entity.user;
 
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.entity.schedule.Day;
-import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.skill.Skill;
 
 import javax.persistence.Entity;
@@ -14,10 +13,6 @@ public class Employee extends User {
 
     @ManyToMany(mappedBy = "employees")
     private List<Skill> skills;
-
-    @ManyToMany(mappedBy = "employees")
-    private List<Schedule> schedule;
-
 
     @ManyToMany(mappedBy = "employees")
     private List<Day> days;
@@ -36,18 +31,9 @@ public class Employee extends User {
         employeeDTO.setName(this.getName());
         employeeDTO.setId(this.getId());
         employeeDTO.setSkills(this.getSkills());
-        employeeDTO.setSchedules(this.getSchedule());
         employeeDTO.setDays(this.getDays());
 
         return employeeDTO;
-    }
-
-    public List<Schedule> getSchedule() {
-        return schedule;
-    }
-
-    public void setSchedule(List<Schedule> schedule) {
-        this.schedule = schedule;
     }
 
     public List<Day> getDays() {
