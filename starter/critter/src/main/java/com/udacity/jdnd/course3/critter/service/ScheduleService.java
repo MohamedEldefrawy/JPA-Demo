@@ -1,7 +1,13 @@
 package com.udacity.jdnd.course3.critter.service;
 
 import com.udacity.jdnd.course3.critter.dto.schedule.ScheduleDTO;
+import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
+import com.udacity.jdnd.course3.critter.entity.user.Customer;
+import com.udacity.jdnd.course3.critter.entity.user.Employee;
+import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
+import com.udacity.jdnd.course3.critter.repository.EmployeeRepository;
+import com.udacity.jdnd.course3.critter.repository.PetRepository;
 import com.udacity.jdnd.course3.critter.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +17,17 @@ import java.util.List;
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
+    private final PetRepository petRepository;
 
-    public ScheduleService(ScheduleRepository scheduleRepository) {
+    private final EmployeeRepository employeeRepository;
+
+    private final CustomerRepository customerRepository;
+
+    public ScheduleService(ScheduleRepository scheduleRepository, PetRepository petRepository, CustomerRepository customerRepository, EmployeeRepository employeeRepository) {
         this.scheduleRepository = scheduleRepository;
+        this.petRepository = petRepository;
+        this.employeeRepository = employeeRepository;
+        this.customerRepository = customerRepository;
     }
 
     public Schedule createSchedule(ScheduleDTO scheduleDTO) {
@@ -30,4 +44,37 @@ public class ScheduleService {
 
         return scheduleDTOS;
     }
+
+    public List<ScheduleDTO> findSchedulesByPetId(Long petId) {
+        Pet selectedPet = this.petRepository.findById(petId).get();
+        List<Schedule> scheduleList = this.scheduleRepository.findSchedulesByPetsContaining(selectedPet);
+        List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
+        scheduleList.forEach(schedule -> {
+            scheduleDTOS.add(schedule.toScheduleDto());
+        });
+
+        return scheduleDTOS;
+    }
+
+    public List<ScheduleDTO> findSchedulesByEmployeeId(Long employeeId) {
+        Employee selectedEmployee = this.employeeRepository.findById(employeeId).get();
+        List<Schedule> scheduleList = this.scheduleRepository.findSchedulesByEmployeesContaining(selectedEmployee);
+        List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
+        scheduleList.forEach(schedule -> {
+            scheduleDTOS.add(schedule.toScheduleDto());
+        });
+
+        return scheduleDTOS;
+    }
+
+    public List<ScheduleDTO> findSchedulesByCustomerId(Long customerId) {
+        Customer selectedCustomer = this.customerRepository.findById(customerId).get();
+        List<Schedule> scheduleList = this.scheduleRepository.findSchedulesByCustomersContaining(selectedCustomer);
+        List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
+        scheduleList.forEach(schedule -> {
+            scheduleDTOS.add(schedule.toScheduleDto());
+        });
+        return scheduleDTOS;
+    }
+
 }

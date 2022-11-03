@@ -3,13 +3,13 @@ package com.udacity.jdnd.course3.critter.entity.schedule;
 import com.udacity.jdnd.course3.critter.dto.schedule.ScheduleDTO;
 import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import com.udacity.jdnd.course3.critter.entity.skill.Skill;
+import com.udacity.jdnd.course3.critter.entity.user.Customer;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -27,6 +27,14 @@ public class Schedule {
             inverseJoinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")}
     )
     private Set<Employee> employees;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "Customer_Schedule",
+            joinColumns = {@JoinColumn(name = "customer_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")}
+    )
+    private Set<Customer> customers;
 
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
@@ -93,11 +101,19 @@ public class Schedule {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Schedule schedule = (Schedule) o;
-        return Objects.equals(id, schedule.id) && Objects.equals(employees, schedule.employees) && Objects.equals(pets, schedule.pets) && Objects.equals(skills, schedule.skills) && Objects.equals(date, schedule.date);
+        return Objects.equals(id, schedule.id) && Objects.equals(employees, schedule.employees) && Objects.equals(pets, schedule.pets) && Objects.equals(skills, schedule.skills) && Objects.equals(date, schedule.date) && Objects.equals(customers, schedule.customers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, employees, pets, skills, date);
+        return Objects.hash(id, employees, pets, skills, date, customers);
+    }
+
+    public Set<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(Set<Customer> customers) {
+        this.customers = customers;
     }
 }

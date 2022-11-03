@@ -41,17 +41,27 @@ public class ScheduleController {
     }
 
     @GetMapping("/pet/{petId}")
-    public List<ScheduleDTO> getScheduleForPet(@PathVariable long petId) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<ScheduleDTO>> getScheduleForPet(@PathVariable long petId) {
+        List<ScheduleDTO> scheduleDTOS = this.scheduleService.findSchedulesByPetId(petId);
+        if (scheduleDTOS.size() == 0)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(scheduleDTOS, HttpStatus.OK);
+
     }
 
     @GetMapping("/employee/{employeeId}")
-    public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<ScheduleDTO>> getScheduleForEmployee(@PathVariable long employeeId) {
+        List<ScheduleDTO> scheduleDTOS = this.scheduleService.findSchedulesByEmployeeId(employeeId);
+        if (scheduleDTOS.size() == 0)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(scheduleDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/customer/{customerId}")
-    public List<ScheduleDTO> getScheduleForCustomer(@PathVariable long customerId) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<ScheduleDTO>> getScheduleForCustomer(@PathVariable long customerId) {
+        List<ScheduleDTO> scheduleDTOS = this.scheduleService.findSchedulesByCustomerId(customerId);
+        if (scheduleDTOS.size() == 0)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(scheduleDTOS, HttpStatus.OK);
     }
 }

@@ -2,13 +2,9 @@ package com.udacity.jdnd.course3.critter.entity.user;
 
 import com.udacity.jdnd.course3.critter.dto.user.CustomerDTO;
 import com.udacity.jdnd.course3.critter.entity.pet.Pet;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -18,6 +14,9 @@ public class Customer extends User {
     private String notes;
     @OneToMany(fetch = javax.persistence.FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Pet> pets = new java.util.ArrayList<>();
+
+    @ManyToMany(mappedBy = "employees")
+    private List<Schedule> schedule;
 
 
     public String getPhoneNumber() {
@@ -44,6 +43,7 @@ public class Customer extends User {
         customerDTO.setNotes(this.getNotes());
         customerDTO.setPhoneNumber(this.getPhoneNumber());
         customerDTO.setPets(this.getPets());
+        customerDTO.setSchedule(this.getSchedule());
 
         return customerDTO;
     }
@@ -54,5 +54,13 @@ public class Customer extends User {
 
     public void setPets(List<Pet> pets) {
         this.pets = pets;
+    }
+
+    public List<Schedule> getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(List<Schedule> schedule) {
+        this.schedule = schedule;
     }
 }
