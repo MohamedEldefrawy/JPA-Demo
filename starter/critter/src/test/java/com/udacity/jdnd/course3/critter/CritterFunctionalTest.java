@@ -27,8 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * This is a set of functional tests to validate the basic capabilities desired for this application.
@@ -306,24 +308,25 @@ public class CritterFunctionalTest {
         return scheduleDTO;
     }
 
-//    private ScheduleDTO populateSchedule(int numEmployees, int numPets, LocalDate date, List<Skill> activities) {
-//        List<Long> employeeIds = IntStream.range(0, numEmployees)
-//                .mapToObj(i -> createEmployeeDTO())
-//                .map(e -> {
-//                    e.setSkills(activities);
-//                    e.setDays(Lists.newHashSet(date.getDayOfWeek()));
-//                    return userController.saveEmployee(e).getId();
-//                }).collect(Collectors.toList());
-//        CustomerDTO customerDTO = userController.saveCustomer(createCustomerDTO()).getBody();
-//        List<Long> petIds = IntStream.range(0, numPets)
-//                .mapToObj(i -> createPetDTO())
-//                .map(p -> {
-//                    assert customerDTO != null;
-//                    p.setCustomer(customerDTO.toCustomer());
-//                    return Objects.requireNonNull(petController.savePet(p).getBody()).getId();
-//                }).collect(Collectors.toList());
-//        return scheduleController.createSchedule(createScheduleDTO(petIds, employeeIds, date, activities));
-//    }
+    private ScheduleDTO populateSchedule(int numEmployees, int numPets, LocalDate date, List<Skill> activities) {
+        List<Employee> employees = IntStream.range(0, numEmployees)
+                .mapToObj(i -> createEmployeeDTO())
+                .map(e -> {
+                    e.setSkills(activities);
+                    e.setDays(Lists.newArrayList(this.days.get(date.getDayOfWeek().getValue())));
+                    return userController.saveEmployee(e).getBody().toEmployee();
+                }).collect(Collectors.toList());
+
+        CustomerDTO customerDTO = userController.saveCustomer(createCustomerDTO()).getBody();
+        List<Pet> pets = IntStream.range(0, numPets)
+                .mapToObj(i -> createPetDTO())
+                .map(p -> {
+                    assert customerDTO != null;
+                    p.setCustomer(customerDTO.toCustomer());
+                    return Objects.requireNonNull(petController.savePet(p).getBody()).toPet();
+                }).collect(Collectors.toList());
+        return scheduleController.createSchedule(createScheduleDTO(pets, employees, date, activities)).getBody();
+    }
 
     private static void compareSchedules(ScheduleDTO sched1, ScheduleDTO sched2) {
         Assertions.assertEquals(sched1.getPets(), sched2.getPets());
