@@ -32,8 +32,12 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public List<ScheduleDTO> getAllSchedules() {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<ScheduleDTO>> getAllSchedules() {
+        List<ScheduleDTO> scheduleDTOS = this.scheduleService.getSchedules();
+        if (scheduleDTOS.size() == 0)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(scheduleDTOS, HttpStatus.OK);
+
     }
 
     @GetMapping("/pet/{petId}")
