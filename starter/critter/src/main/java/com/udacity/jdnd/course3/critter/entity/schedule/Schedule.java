@@ -10,6 +10,8 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "schedules")
@@ -18,22 +20,22 @@ public class Schedule {
     @GeneratedValue
     private Long id;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "Employee_Schedule",
-            joinColumns = {@JoinColumn(name = "employee_id")},
-            inverseJoinColumns = {@JoinColumn(name = "schedule_id")}
+            joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")}
     )
-    private List<Employee> employees;
+    private Set<Employee> employees;
 
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
-    private List<Pet> pets;
+    private Set<Pet> pets;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
-    private List<Skill> skills;
+    private Set<Skill> skills;
     private LocalDate date;
 
     public long getId() {
@@ -44,19 +46,19 @@ public class Schedule {
         this.id = id;
     }
 
-    public List<Employee> getEmployees() {
+    public Set<Employee> getEmployees() {
         return employees;
     }
 
-    public void setEmployees(List<Employee> employees) {
+    public void setEmployees(Set<Employee> employees) {
         this.employees = employees;
     }
 
-    public List<Pet> getPets() {
+    public Set<Pet> getPets() {
         return pets;
     }
 
-    public void setPets(List<Pet> pets) {
+    public void setPets(Set<Pet> pets) {
         this.pets = pets;
     }
 
@@ -78,11 +80,24 @@ public class Schedule {
         return scheduleDTO;
     }
 
-    public List<Skill> getSkills() {
+    public Set<Skill> getSkills() {
         return skills;
     }
 
-    public void setSkills(List<Skill> skills) {
+    public void setSkills(Set<Skill> skills) {
         this.skills = skills;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Schedule schedule = (Schedule) o;
+        return Objects.equals(id, schedule.id) && Objects.equals(employees, schedule.employees) && Objects.equals(pets, schedule.pets) && Objects.equals(skills, schedule.skills) && Objects.equals(date, schedule.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, employees, pets, skills, date);
     }
 }

@@ -8,6 +8,7 @@ import com.udacity.jdnd.course3.critter.entity.skill.Skill;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Employee extends User {
@@ -56,5 +57,18 @@ public class Employee extends User {
 
     public void setDays(List<Day> days) {
         this.days = days;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return Objects.equals(skills, employee.skills) && Objects.equals(schedule, employee.schedule) && Objects.equals(days, employee.days);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(skills, schedule, days);
     }
 }

@@ -16,8 +16,7 @@ import java.util.List;
 public class Customer extends User {
     private String phoneNumber;
     private String notes;
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
+    @OneToMany(fetch = javax.persistence.FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Pet> pets = new java.util.ArrayList<>();
 
 

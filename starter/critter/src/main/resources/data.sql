@@ -1,12 +1,12 @@
-insert into skills
+insert into skills (id,name)
 values (1, "PETTING");
-insert into skills
+insert into skills(id,name)
 values (2, "WALKING");
-insert into skills
+insert into skills(id,name)
 values (3, "FEEDING");
-insert into skills
+insert into skills(id,name)
 values (4, "MEDICATING");
-insert into skills
+insert into skills(id,name)
 values (5, "SHAVING");
 
 insert into days

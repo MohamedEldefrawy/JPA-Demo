@@ -16,15 +16,15 @@ public class Day {
     public Day() {
     }
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "Employee_Day",
-            joinColumns = {@JoinColumn(name = "employee_id")},
-            inverseJoinColumns = {@JoinColumn(name = "day_id")}
+            joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "day_id", referencedColumnName = "id")}
     )
 
 
-    private List<Employee> employees;
+    private List<Employee> employees = new java.util.ArrayList<>();
 
     private String day;
 

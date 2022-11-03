@@ -17,13 +17,13 @@ public class Skill {
     private Long id;
     private String name;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany
     @JoinTable(
             name = "Employee_Skill",
-            joinColumns = {@JoinColumn(name = "employee_id")},
-            inverseJoinColumns = {@JoinColumn(name = "skill_id")}
+            joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "skill_id", referencedColumnName = "id")}
     )
-    private List<Employee> employees;
+    private List<Employee> employees = new java.util.ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "schedule_id")

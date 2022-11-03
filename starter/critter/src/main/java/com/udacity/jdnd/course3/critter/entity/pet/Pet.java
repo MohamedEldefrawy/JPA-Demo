@@ -8,6 +8,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "pets")
@@ -88,5 +89,18 @@ public class Pet {
         petDTO.setBirthDate(this.getBirthDate());
         petDTO.setCustomer(this.getCustomer());
         return petDTO;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pet pet = (Pet) o;
+        return Objects.equals(id, pet.id) && type == pet.type && Objects.equals(name, pet.name) && Objects.equals(birthDate, pet.birthDate) && Objects.equals(notes, pet.notes) && Objects.equals(customer, pet.customer) && Objects.equals(schedule, pet.schedule);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, name, birthDate, notes, customer, schedule);
     }
 }
