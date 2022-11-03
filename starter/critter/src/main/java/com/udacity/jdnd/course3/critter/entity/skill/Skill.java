@@ -1,6 +1,9 @@
 package com.udacity.jdnd.course3.critter.entity.skill;
 
+import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -21,6 +24,11 @@ public class Skill {
             inverseJoinColumns = {@JoinColumn(name = "skill_id")}
     )
     private List<Employee> employees;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "schedule_id")
+    @Fetch(FetchMode.JOIN)
+    private Schedule schedule;
 
     public Long getId() {
         return id;
@@ -49,5 +57,21 @@ public class Skill {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
     }
 }

@@ -1,7 +1,12 @@
 package com.udacity.jdnd.course3.critter.controller;
 
 import com.udacity.jdnd.course3.critter.dto.schedule.ScheduleDTO;
+import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
+import com.udacity.jdnd.course3.critter.service.ScheduleService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -12,9 +17,18 @@ import java.util.List;
 @RequestMapping("/schedule")
 public class ScheduleController {
 
+    private final ScheduleService scheduleService;
+
+    public ScheduleController(ScheduleService scheduleService) {
+        this.scheduleService = scheduleService;
+    }
+
     @PostMapping
-    public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<ScheduleDTO> createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+        Schedule createdSchedule = this.scheduleService.createSchedule(scheduleDTO);
+        if (createdSchedule == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(createdSchedule.toScheduleDto(), HttpStatus.CREATED);
     }
 
     @GetMapping

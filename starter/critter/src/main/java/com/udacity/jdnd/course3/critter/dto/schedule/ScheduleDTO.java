@@ -1,6 +1,7 @@
 package com.udacity.jdnd.course3.critter.dto.schedule;
 
 import com.udacity.jdnd.course3.critter.entity.pet.Pet;
+import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.skill.Skill;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
 
@@ -57,5 +58,15 @@ public class ScheduleDTO {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    public Schedule toSchedule() {
+        Schedule schedule = new Schedule();
+        schedule.setDate(this.getDate());
+        schedule.setSkills(this.getActivities());
+        schedule.setEmployees(this.getEmployees());
+        schedule.setPets(this.getPets());
+        schedule.setId(this.getId());
+        return schedule;
     }
 }
