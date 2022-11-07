@@ -3,8 +3,6 @@ package com.udacity.jdnd.course3.critter.entity.pet;
 import com.udacity.jdnd.course3.critter.dto.pet.PetDTO;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.user.Customer;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -22,13 +20,12 @@ public class Pet {
     private LocalDate birthDate;
     private String notes;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "schedule_id")
-    @Fetch(FetchMode.JOIN)
     private Schedule schedule;
 
     public Customer getCustomer() {

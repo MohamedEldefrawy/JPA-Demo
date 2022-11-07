@@ -5,6 +5,7 @@ import com.udacity.jdnd.course3.critter.entity.pet.PetType;
 import com.udacity.jdnd.course3.critter.entity.user.Customer;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * Represents the form that pet request and response data takes. Does not map
@@ -74,5 +75,18 @@ public class PetDTO {
         pet.setType(this.getType());
         pet.setBirthDate(this.getBirthDate());
         return pet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PetDTO petDTO = (PetDTO) o;
+        return id == petDTO.id && type == petDTO.type && Objects.equals(name, petDTO.name) && Objects.equals(customer, petDTO.customer) && Objects.equals(birthDate, petDTO.birthDate) && Objects.equals(notes, petDTO.notes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, name, customer, birthDate, notes);
     }
 }

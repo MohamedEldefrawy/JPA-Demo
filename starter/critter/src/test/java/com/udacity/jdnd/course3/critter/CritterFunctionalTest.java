@@ -6,6 +6,7 @@ import com.udacity.jdnd.course3.critter.controller.PetController;
 import com.udacity.jdnd.course3.critter.controller.ScheduleController;
 import com.udacity.jdnd.course3.critter.controller.UserController;
 import com.udacity.jdnd.course3.critter.dto.pet.PetDTO;
+import com.udacity.jdnd.course3.critter.dto.schedule.DayDto;
 import com.udacity.jdnd.course3.critter.dto.schedule.ScheduleDTO;
 import com.udacity.jdnd.course3.critter.dto.user.CustomerDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
@@ -14,6 +15,7 @@ import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import com.udacity.jdnd.course3.critter.entity.pet.PetType;
 import com.udacity.jdnd.course3.critter.entity.schedule.Day;
 import com.udacity.jdnd.course3.critter.entity.skill.Skill;
+import com.udacity.jdnd.course3.critter.entity.user.Customer;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
 import com.udacity.jdnd.course3.critter.repository.DayRepository;
 import com.udacity.jdnd.course3.critter.repository.SkillRepository;
@@ -26,6 +28,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -168,8 +171,10 @@ public class CritterFunctionalTest {
         Assertions.assertNull(emp1.getDays());
 
         List<Day> days = this.dayRepository.findAll();
-        List<Day> availability = Lists.newArrayList(days.get(2), days.get(3), days.get(4));
-        userController.setAvailability(availability, emp1.getId());
+        Set<Day> availability = Sets.newHashSet(days.get(2), days.get(3), days.get(4));
+        DayDto dayDto = new DayDto();
+        dayDto.setDays(availability);
+        userController.setAvailability(dayDto, emp1.getId());
 
         EmployeeDTO emp2 = userController.getEmployee(emp1.getId()).getBody();
         assert emp2 != null;
@@ -182,9 +187,9 @@ public class CritterFunctionalTest {
         EmployeeDTO emp2 = createEmployeeDTO();
         EmployeeDTO emp3 = createEmployeeDTO();
 
-        emp1.setDays(Lists.newArrayList(this.days.get(0), this.days.get(1), this.days.get(2)));
-        emp2.setDays(Lists.newArrayList(this.days.get(2), this.days.get(3), this.days.get(4)));
-        emp3.setDays(Lists.newArrayList(this.days.get(4), this.days.get(5), this.days.get(6)));
+        emp1.setDays(Sets.newHashSet(this.days.get(0), this.days.get(1), this.days.get(2)));
+        emp2.setDays(Sets.newHashSet(this.days.get(2), this.days.get(3), this.days.get(4)));
+        emp3.setDays(Sets.newHashSet(this.days.get(4), this.days.get(5), this.days.get(6)));
 
         emp1.setSkills(Lists.newArrayList(this.skills.get(0), this.skills.get(1)));
         emp2.setSkills(Lists.newArrayList(this.skills.get(1), this.skills.get(2)));
@@ -219,7 +224,7 @@ public class CritterFunctionalTest {
     @Test
     public void testSchedulePetsForServiceWithEmployee() {
         EmployeeDTO employeeTemp = createEmployeeDTO();
-        employeeTemp.setDays(Lists.newArrayList(this.days.get(0), this.days.get(1), this.days.get(2)));
+        employeeTemp.setDays(Sets.newHashSet(this.days.get(0), this.days.get(1), this.days.get(2)));
         EmployeeDTO employeeDTO = userController.saveEmployee(employeeTemp).getBody();
         CustomerDTO customerDTO = userController.saveCustomer(createCustomerDTO()).getBody();
         PetDTO petTemp = createPetDTO();
@@ -233,8 +238,11 @@ public class CritterFunctionalTest {
         assert employeeDTO != null;
         Set<Employee> employeeList = Sets.newHashSet(employeeDTO.toEmployee());
         List<Skill> skillSet = Lists.newArrayList(this.skills.get(0));
+        Set<Customer> customers = new HashSet<>();
+        customers.add(customerDTO.toCustomer());
 
-        scheduleController.createSchedule(createScheduleDTO(petList, employeeList, date, skillSet));
+
+        scheduleController.createSchedule(createScheduleDTO(petList, employeeList, customers, date, skillSet));
         ScheduleDTO scheduleDTO = Objects.requireNonNull(scheduleController.getAllSchedules().getBody()).get(0);
 
         Assertions.assertEquals(scheduleDTO.getActivities(), Sets.newHashSet(skillSet));
@@ -320,7 +328,7 @@ public class CritterFunctionalTest {
         return employeeRequestDTO;
     }
 
-    private static ScheduleDTO createScheduleDTO(Set<Pet> pets, Set<Employee> employees, LocalDate date, List<Skill> activities) {
+    private static ScheduleDTO createScheduleDTO(Set<Pet> pets, Set<Employee> employees, Set<Customer> customers, LocalDate date, List<Skill> activities) {
         ScheduleDTO scheduleDTO = new ScheduleDTO();
         scheduleDTO.setPets(pets);
         scheduleDTO.setEmployees(employees);
@@ -334,7 +342,7 @@ public class CritterFunctionalTest {
                 .mapToObj(i -> createEmployeeDTO())
                 .map(e -> {
                     e.setSkills(activities);
-                    e.setDays(Lists.newArrayList(this.days.get(date.getDayOfWeek().getValue())));
+                    e.setDays(Sets.newHashSet(this.days.get(date.getDayOfWeek().getValue())));
                     return Objects.requireNonNull(userController.saveEmployee(e).getBody()).toEmployee();
                 }).collect(Collectors.toSet());
 
@@ -346,14 +354,15 @@ public class CritterFunctionalTest {
                     p.setCustomer(customerDTO.toCustomer());
                     return Objects.requireNonNull(petController.savePet(p).getBody()).toPet();
                 }).collect(Collectors.toSet());
-        return scheduleController.createSchedule(createScheduleDTO(pets, employees, date, activities)).getBody();
+        Set<Customer> customers = new HashSet<>();
+        customers.add(customerDTO.toCustomer());
+        return scheduleController.createSchedule(createScheduleDTO(pets, employees, customers, date, activities)).getBody();
     }
 
     private static void compareSchedules(ScheduleDTO sched1, ScheduleDTO sched2) {
         Assertions.assertEquals(sched1.getPets(), sched2.getPets());
         Assertions.assertEquals(sched1.getActivities(), sched2.getActivities());
-        Assertions.assertEquals(sched1.getEmployees(), sched2.getEmployees());
+        Assertions.assertArrayEquals(sched1.getEmployees().toArray(new Employee[0]), sched2.getEmployees().toArray(new Employee[0]));
         Assertions.assertEquals(sched1.getDate(), sched2.getDate());
     }
-
 }

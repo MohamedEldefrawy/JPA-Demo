@@ -13,20 +13,18 @@ public class Day {
     @GeneratedValue
     private Long id;
 
+    private String day;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Employee_Schedule",
+            joinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")}
+    )
+    private List<Employee> employees;
+
     public Day() {
     }
-
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "Employee_Day",
-            joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "day_id", referencedColumnName = "id")}
-    )
-
-
-    private List<Employee> employees = new java.util.ArrayList<>();
-
-    private String day;
 
     public Long getId() {
         return id;
@@ -57,16 +55,17 @@ public class Day {
         this.day = day;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Day)) return false;
         Day day1 = (Day) o;
-        return id.equals(day1.id) && day.equals(day1.day);
+        return Objects.equals(getDay(), day1.getDay());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, day);
+        return Objects.hash(getDay());
     }
 }

@@ -7,23 +7,32 @@ import com.udacity.jdnd.course3.critter.entity.skill.Skill;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
 import com.udacity.jdnd.course3.critter.repository.DayRepository;
 import com.udacity.jdnd.course3.critter.repository.EmployeeRepository;
+import com.udacity.jdnd.course3.critter.repository.SkillRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final DayRepository dayRepository;
+    private final SkillRepository skillRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository, DayRepository dayRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, DayRepository dayRepository, SkillRepository skillRepository) {
         this.employeeRepository = employeeRepository;
         this.dayRepository = dayRepository;
+        this.skillRepository = skillRepository;
     }
 
     public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
-        return this.employeeRepository.save(employeeDTO.toEmployee()).toEmployeeDto();
+        List<Skill> skills = new ArrayList<>();
+        employeeDTO.getSkills().forEach(skill -> skills.add(this.skillRepository.findByName(skill.getName())));
+        Employee newEmployee = employeeDTO.toEmployee();
+        newEmployee.setSkills(skills);
+        return this.employeeRepository.save(newEmployee).toEmployeeDto();
     }
 
     public Employee getEmployee(Long employeeId) {
@@ -31,9 +40,18 @@ public class EmployeeService {
         return optionalEmployee.orElse(null);
     }
 
-    public void setAvailabliity(List<Day> days, Long employeeId) {
+    public boolean setAvailabliity(Set<Day> days, Long employeeId) {
         Optional<Employee> optionalEmployee = this.employeeRepository.findById(employeeId);
-        optionalEmployee.ifPresent(employee -> employee.setDays(days));
+        Set<Day> selectedDays = new HashSet<>();
+        days.forEach(day -> selectedDays.add(this.dayRepository.findDayByDay(day.getDay())));
+
+        if (optionalEmployee.isPresent()) {
+            Employee selectedEmployee = optionalEmployee.get();
+            selectedEmployee.setDays(selectedDays);
+            this.employeeRepository.save(selectedEmployee);
+            return true;
+        }
+        return false;
     }
 
     public List<EmployeeDTO> findEmployeesByAvailabilityAndSkills(EmployeeRequestDTO requestDTO) {
@@ -44,8 +62,9 @@ public class EmployeeService {
         Iterable<Employee> employeeIterable = this.employeeRepository.findAll();
         employeeIterable.forEach(allEmployee::add);
         List<Employee> selectedEmployeesByDay = allEmployee.stream().filter(employee -> employee.getDays().contains(selectedDay)).collect(Collectors.toList());
-        for (Skill skill : requestDTO.getSkills()
-        ) {
+        List<Skill> skills = new ArrayList<>();
+        requestDTO.getSkills().forEach(skill -> skills.add(this.skillRepository.findByName(skill.getName())));
+        for (Skill skill : skills) {
             selectedEmployees.addAll(selectedEmployeesByDay.stream().filter(employee -> employee.getSkills().contains(skill)).collect(Collectors.toSet()));
         }
         selectedEmployees.forEach(employee -> employeesDtos.add(employee.toEmployeeDto()));

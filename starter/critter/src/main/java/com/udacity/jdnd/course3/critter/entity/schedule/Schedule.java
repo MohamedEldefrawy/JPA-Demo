@@ -20,12 +20,7 @@ public class Schedule {
     @GeneratedValue
     private Long id;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "Employee_Schedule",
-            joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")}
-    )
+    @ManyToMany(mappedBy = "schedules")
     private Set<Employee> employees;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -34,16 +29,16 @@ public class Schedule {
             joinColumns = {@JoinColumn(name = "customer_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")}
     )
-    private Set<Customer> customers;
+    private Set<Customer> customers = new java.util.LinkedHashSet<>();
 
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
-    private Set<Pet> pets;
+    private Set<Pet> pets = new java.util.LinkedHashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "schedule", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
-    private Set<Skill> skills;
+    private Set<Skill> skills = new java.util.LinkedHashSet<>();
     private LocalDate date;
 
     public long getId() {
@@ -96,24 +91,24 @@ public class Schedule {
         this.skills = skills;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Schedule schedule = (Schedule) o;
-        return Objects.equals(id, schedule.id) && Objects.equals(employees, schedule.employees) && Objects.equals(pets, schedule.pets) && Objects.equals(skills, schedule.skills) && Objects.equals(date, schedule.date) && Objects.equals(customers, schedule.customers);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, employees, pets, skills, date, customers);
-    }
-
     public Set<Customer> getCustomers() {
         return customers;
     }
 
     public void setCustomers(Set<Customer> customers) {
         this.customers = customers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Schedule)) return false;
+        Schedule schedule = (Schedule) o;
+        return Objects.equals(id, schedule.id) && Objects.equals(employees, schedule.employees) && Objects.equals(customers, schedule.customers) && Objects.equals(pets, schedule.pets) && Objects.equals(skills, schedule.skills) && Objects.equals(date, schedule.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, employees, customers, pets, skills, date);
     }
 }

@@ -3,18 +3,19 @@ package com.udacity.jdnd.course3.critter.service;
 import com.udacity.jdnd.course3.critter.dto.schedule.ScheduleDTO;
 import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
-import com.udacity.jdnd.course3.critter.entity.user.Customer;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
 import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
 import com.udacity.jdnd.course3.critter.repository.EmployeeRepository;
 import com.udacity.jdnd.course3.critter.repository.PetRepository;
 import com.udacity.jdnd.course3.critter.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final PetRepository petRepository;
@@ -47,7 +48,12 @@ public class ScheduleService {
 
     public List<ScheduleDTO> findSchedulesByPetId(Long petId) {
         Pet selectedPet = this.petRepository.findById(petId).get();
-        List<Schedule> scheduleList = this.scheduleRepository.findSchedulesByPetsContaining(selectedPet);
+        Iterable<Schedule> schedulesList = this.scheduleRepository.findAll();
+        List<Schedule> scheduleList = new ArrayList<>();
+        schedulesList.forEach(schedule -> {
+            if (schedule.getPets().contains(selectedPet))
+                scheduleList.add(schedule);
+        });
         List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
         scheduleList.forEach(schedule -> {
             scheduleDTOS.add(schedule.toScheduleDto());
@@ -68,13 +74,6 @@ public class ScheduleService {
     }
 
     public List<ScheduleDTO> findSchedulesByCustomerId(Long customerId) {
-        Customer selectedCustomer = this.customerRepository.findById(customerId).get();
-        List<Schedule> scheduleList = this.scheduleRepository.findSchedulesByCustomersContaining(selectedCustomer);
-        List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
-        scheduleList.forEach(schedule -> {
-            scheduleDTOS.add(schedule.toScheduleDto());
-        });
-        return scheduleDTOS;
+        throw new ExceptionInInitializerError();
     }
-
 }

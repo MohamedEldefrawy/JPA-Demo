@@ -4,16 +4,20 @@ import com.udacity.jdnd.course3.critter.dto.user.CustomerDTO;
 import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "customers")
 public class Customer extends User {
     private String phoneNumber;
     private String notes;
-    @OneToMany(fetch = javax.persistence.FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Pet> pets = new java.util.ArrayList<>();
+    @OneToMany(mappedBy = "customer")
+    private List<Pet> pets;
 
     @ManyToMany(mappedBy = "employees")
     private List<Schedule> schedule;
@@ -62,5 +66,18 @@ public class Customer extends User {
 
     public void setSchedule(List<Schedule> schedule) {
         this.schedule = schedule;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+        Customer customer = (Customer) o;
+        return Objects.equals(getPhoneNumber(), customer.getPhoneNumber()) && Objects.equals(getNotes(), customer.getNotes()) && Objects.equals(getPets(), customer.getPets()) && Objects.equals(getSchedule(), customer.getSchedule());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPhoneNumber(), getNotes(), getPets(), getSchedule());
     }
 }

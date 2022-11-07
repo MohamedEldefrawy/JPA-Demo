@@ -16,9 +16,9 @@ public class EmployeeDTO {
     private long id;
     private String name;
     private List<Skill> skills;
-    private List<Schedule> schedules;
+    private Set<Schedule> schedules;
 
-    private List<Day> days;
+    private Set<Day> days;
 
     public long getId() {
         return id;
@@ -44,26 +44,26 @@ public class EmployeeDTO {
         this.skills = skills;
     }
 
-    public List<Schedule> getSchedules() {
+    public Set<Schedule> getSchedules() {
         return schedules;
     }
 
-    public void setSchedules(List<Schedule> schedules) {
+    public void setSchedules(Set<Schedule> schedules) {
         this.schedules = schedules;
     }
 
-    public List<Day> getDays() {
+    public Set<Day> getDays() {
         return days;
     }
 
-    public void setDays(List<Day> days) {
+    public void setDays(Set<Day> days) {
         this.days = days;
     }
 
     public Employee toEmployee() {
         Employee employee = new Employee();
         employee.setDays(this.getDays());
-        employee.setSchedule(this.getSchedules());
+        employee.setSchedules(this.getSchedules());
         employee.setId(this.getId());
         employee.setName(this.getName());
         employee.setSkills(this.getSkills());

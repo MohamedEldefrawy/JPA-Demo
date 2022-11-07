@@ -1,9 +1,9 @@
 package com.udacity.jdnd.course3.critter.controller;
 
+import com.udacity.jdnd.course3.critter.dto.schedule.DayDto;
 import com.udacity.jdnd.course3.critter.dto.user.CustomerDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeRequestDTO;
-import com.udacity.jdnd.course3.critter.entity.schedule.Day;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import org.springframework.http.HttpStatus;
@@ -60,7 +60,6 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
-
     }
 
     @PostMapping("/employee/{employeeId}")
@@ -73,8 +72,10 @@ public class UserController {
     }
 
     @PutMapping("/employee/{employeeId}")
-    public ResponseEntity<Void> setAvailability(@RequestBody List<Day> daysAvailable, @PathVariable long employeeId) {
-        this.employeeService.setAvailabliity(daysAvailable, employeeId);
+    public ResponseEntity<Void> setAvailability(@RequestBody DayDto daysAvailable, @PathVariable long employeeId) {
+        boolean result = this.employeeService.setAvailabliity(daysAvailable.getDays(), employeeId);
+        if (!result)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Employee found with id: " + employeeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -1,9 +1,8 @@
 package com.udacity.jdnd.course3.critter.entity.skill;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,23 +10,18 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "skills")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "employees"})
 public class Skill {
     @Id
     @GeneratedValue
     private Long id;
     private String name;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Employee_Skill",
-            joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "skill_id", referencedColumnName = "id")}
-    )
-    private List<Employee> employees = new java.util.ArrayList<>();
+    @ManyToMany(mappedBy = "skills")
+    private List<Employee> employees;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "schedule_id")
-    @Fetch(FetchMode.JOIN)
     private Schedule schedule;
 
     public Long getId() {

@@ -5,23 +5,39 @@ import com.udacity.jdnd.course3.critter.entity.schedule.Day;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.skill.Skill;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
+@Table(name = "employees")
 public class Employee extends User {
 
-    @ManyToMany(mappedBy = "employees")
-    private List<Skill> skills;
+    @ManyToMany
+    @JoinTable(
+            name = "Employee_Skill",
+            joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "skill_id", referencedColumnName = "id")}
+    )
+    private List<Skill> skills = new java.util.ArrayList<>();
 
-    @ManyToMany(mappedBy = "employees")
-    private List<Schedule> schedule;
+    @ManyToMany
+    @JoinTable(
+            name = "Employee_Schedule",
+            joinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")}
+    )
+    private Set<Schedule> schedules;
 
 
-    @ManyToMany(mappedBy = "employees")
-    private List<Day> days;
+    @ManyToMany
+    @JoinTable(
+            name = "Employee_Day",
+            joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "day_id", referencedColumnName = "id")}
+    )
+    private Set<Day> days;
 
     public List<Skill> getSkills() {
         return skills;
@@ -37,38 +53,38 @@ public class Employee extends User {
         employeeDTO.setName(this.getName());
         employeeDTO.setId(this.getId());
         employeeDTO.setSkills(this.getSkills());
-        employeeDTO.setSchedules(this.getSchedule());
+        employeeDTO.setSchedules(this.getSchedules());
         employeeDTO.setDays(this.getDays());
 
         return employeeDTO;
     }
 
-    public List<Schedule> getSchedule() {
-        return schedule;
+    public Set<Schedule> getSchedules() {
+        return schedules;
     }
 
-    public void setSchedule(List<Schedule> schedule) {
-        this.schedule = schedule;
+    public void setSchedules(Set<Schedule> schedule) {
+        this.schedules = schedule;
     }
 
-    public List<Day> getDays() {
+    public Set<Day> getDays() {
         return days;
     }
 
-    public void setDays(List<Day> days) {
+    public void setDays(Set<Day> days) {
         this.days = days;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Employee)) return false;
         Employee employee = (Employee) o;
-        return Objects.equals(skills, employee.skills) && Objects.equals(schedule, employee.schedule) && Objects.equals(days, employee.days);
+        return Objects.equals(getSkills(), employee.getSkills()) && Objects.equals(getSchedules(), employee.getSchedules()) && Objects.equals(getDays(), employee.getDays());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(skills, schedule, days);
+        return Objects.hash(getSkills(), getSchedules(), getDays());
     }
 }
