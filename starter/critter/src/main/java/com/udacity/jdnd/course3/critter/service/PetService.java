@@ -2,6 +2,7 @@ package com.udacity.jdnd.course3.critter.service;
 
 import com.udacity.jdnd.course3.critter.dto.pet.PetDTO;
 import com.udacity.jdnd.course3.critter.entity.pet.Pet;
+import com.udacity.jdnd.course3.critter.entity.user.Customer;
 import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
 import com.udacity.jdnd.course3.critter.repository.PetRepository;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class PetService {
     }
 
     public Pet createPet(PetDTO petDTO) {
+        Optional<Customer> customerOptional = this.customerRepository.findById(petDTO.getCustomer().getId());
+        if (customerOptional.isPresent())
+            petDTO.setCustomer(this.customerRepository.findById(petDTO.getCustomer().getId()).get());
         return this.petRepository.save(petDTO.toPet());
     }
 
@@ -37,6 +41,9 @@ public class PetService {
 
     public List<PetDTO> getPetsByOwner(Long ownerId) {
         List<PetDTO> pets = new ArrayList<>();
+        Optional<Customer> customerOptional = this.customerRepository.findById(ownerId);
+        if (!customerOptional.isPresent())
+            return new ArrayList<>();
         this.petRepository.findPetsByCustomer(this.customerRepository.findById(ownerId).get()).forEach(pet -> pets.add(pet.toPetDto()));
         return pets;
     }

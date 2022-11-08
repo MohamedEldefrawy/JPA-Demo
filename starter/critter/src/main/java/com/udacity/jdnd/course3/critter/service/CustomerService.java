@@ -1,6 +1,7 @@
 package com.udacity.jdnd.course3.critter.service;
 
 import com.udacity.jdnd.course3.critter.dto.user.CustomerDTO;
+import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import com.udacity.jdnd.course3.critter.entity.user.Customer;
 import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
 import com.udacity.jdnd.course3.critter.repository.PetRepository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -35,7 +37,10 @@ public class CustomerService {
     }
 
     public CustomerDTO getCustomersByPetId(Long petId) {
-        return this.customerRepository.findCustomerByPetsContaining(this.petRepository.findById(petId).get())
-                .toCustomerDto();
+        Optional<Pet> petOptional = this.petRepository.findById(petId);
+        if (petOptional.isPresent())
+            return this.customerRepository.findCustomerByPetsContaining(this.petRepository.findById(petId).get())
+                    .toCustomerDto();
+        return null;
     }
 }

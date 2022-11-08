@@ -1,5 +1,6 @@
 package com.udacity.jdnd.course3.critter.dto.pet;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import com.udacity.jdnd.course3.critter.entity.pet.PetType;
 import com.udacity.jdnd.course3.critter.entity.user.Customer;
@@ -15,6 +16,8 @@ public class PetDTO {
     private long id;
     private PetType type;
     private String name;
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
     private Customer customer;
     private LocalDate birthDate;
     private String notes;

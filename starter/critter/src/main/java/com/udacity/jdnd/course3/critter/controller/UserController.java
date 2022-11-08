@@ -4,6 +4,7 @@ import com.udacity.jdnd.course3.critter.dto.schedule.DayDto;
 import com.udacity.jdnd.course3.critter.dto.user.CustomerDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeRequestDTO;
+import com.udacity.jdnd.course3.critter.entity.user.Employee;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import org.springframework.http.HttpStatus;
@@ -49,7 +50,8 @@ public class UserController {
     @GetMapping("/customer/pet/{petId}")
     public ResponseEntity<CustomerDTO> getOwnerByPet(@PathVariable long petId) {
         CustomerDTO selectedCustomer = this.customerService.getCustomersByPetId(petId);
-        System.out.println(selectedCustomer.toCustomer().getPets());
+        if (selectedCustomer == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find pet with id: " + petId);
         return new ResponseEntity<>(selectedCustomer, HttpStatus.OK);
     }
 
@@ -62,13 +64,13 @@ public class UserController {
         return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
     }
 
-    @PostMapping("/employee/{employeeId}")
+    @GetMapping("/employee/{employeeId}")
     public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable long employeeId) {
+        Employee selectedEmployee = this.employeeService.getEmployee(employeeId);
+        if (selectedEmployee == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No employee found with id :" + employeeId);
         EmployeeDTO employee = this.employeeService.getEmployee(employeeId).toEmployeeDto();
-        if (employee == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(employee, HttpStatus.OK);
-
     }
 
     @PutMapping("/employee/{employeeId}")

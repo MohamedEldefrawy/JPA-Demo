@@ -1,5 +1,6 @@
 package com.udacity.jdnd.course3.critter.entity.pet;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.udacity.jdnd.course3.critter.dto.pet.PetDTO;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.user.Customer;
@@ -10,6 +11,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "pets")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "customer"})
 public class Pet {
 
     @Id
@@ -20,7 +22,7 @@ public class Pet {
     private LocalDate birthDate;
     private String notes;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

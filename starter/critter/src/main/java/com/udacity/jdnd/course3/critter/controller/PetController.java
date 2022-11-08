@@ -26,7 +26,7 @@ public class PetController {
     public ResponseEntity<PetDTO> savePet(@RequestBody PetDTO petDTO) {
         Pet createdPet = this.petService.createPet(petDTO);
         if (createdPet == null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Couldn't find customer with id: " + petDTO.getCustomer().getId());
         return new ResponseEntity<>(createdPet.toPetDto(), HttpStatus.CREATED);
     }
 
