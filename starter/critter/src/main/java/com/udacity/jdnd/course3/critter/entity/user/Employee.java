@@ -22,14 +22,8 @@ public class Employee extends User {
     )
     private List<Skill> skills = new java.util.ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "Employee_Schedule",
-            joinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")}
-    )
+    @ManyToMany(mappedBy = "employees")
     private Set<Schedule> schedules;
-
 
     @ManyToMany
     @JoinTable(

@@ -1,7 +1,6 @@
 package com.udacity.jdnd.course3.critter.entity.skill;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
 
 import javax.persistence.*;
@@ -19,10 +18,6 @@ public class Skill {
 
     @ManyToMany(mappedBy = "skills")
     private List<Employee> employees;
-
-    @ManyToOne
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule;
 
     public Long getId() {
         return id;
@@ -53,13 +48,6 @@ public class Skill {
         return Objects.hash(id, name);
     }
 
-    public Schedule getSchedule() {
-        return schedule;
-    }
-
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
-    }
 
     public List<Employee> getEmployees() {
         return employees;

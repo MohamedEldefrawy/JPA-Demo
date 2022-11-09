@@ -16,8 +16,8 @@ import java.util.Objects;
 public class Customer extends User {
     private String phoneNumber;
     private String notes;
-    @OneToMany(mappedBy = "customer")
-    private List<Pet> pets;
+    @OneToMany(fetch = javax.persistence.FetchType.EAGER, mappedBy = "customer")
+    private List<Pet> pets = new java.util.ArrayList<>();
 
     @ManyToMany(mappedBy = "employees")
     private List<Schedule> schedule;

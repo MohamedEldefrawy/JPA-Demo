@@ -93,13 +93,13 @@ public class Pet {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Pet)) return false;
         Pet pet = (Pet) o;
-        return Objects.equals(id, pet.id) && type == pet.type && Objects.equals(name, pet.name) && Objects.equals(birthDate, pet.birthDate) && Objects.equals(notes, pet.notes) && Objects.equals(customer, pet.customer) && Objects.equals(schedule, pet.schedule);
+        return getId().equals(pet.getId()) && getType() == pet.getType() && getName().equals(pet.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, name, birthDate, notes, customer, schedule);
+        return Objects.hash(getId(), getType(), getName());
     }
 }

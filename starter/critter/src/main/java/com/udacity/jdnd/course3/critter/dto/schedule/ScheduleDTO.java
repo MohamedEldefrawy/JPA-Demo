@@ -1,13 +1,11 @@
 package com.udacity.jdnd.course3.critter.dto.schedule;
 
-import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
-import com.udacity.jdnd.course3.critter.entity.skill.Skill;
+import com.udacity.jdnd.course3.critter.entity.user.Customer;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
 
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.Set;
 import java.util.Set;
 
 /**
@@ -17,9 +15,8 @@ import java.util.Set;
 public class ScheduleDTO {
     private long id;
     private Set<Employee> employees;
-    private Set<Pet> pets;
+    private Set<Customer> customers;
     private LocalDate date;
-    private Set<Skill> activities;
 
     public long getId() {
         return id;
@@ -38,24 +35,17 @@ public class ScheduleDTO {
         this.date = date;
     }
 
-    public Set<Skill> getActivities() {
-        return activities;
-    }
-
-    public void setActivities(Set<Skill> activities) {
-        this.activities = activities;
-    }
 
     public Set<Employee> getEmployees() {
         return employees;
     }
 
-    public Set<Pet> getPets() {
-        return pets;
+    public Set<Customer> getCustomers() {
+        return customers;
     }
 
-    public void setPets(Set<Pet> pets) {
-        this.pets = pets;
+    public void setCustomers(Set<Customer> customers) {
+        this.customers = customers;
     }
 
     public void setEmployees(Set<Employee> employees) {
@@ -65,9 +55,8 @@ public class ScheduleDTO {
     public Schedule toSchedule() {
         Schedule schedule = new Schedule();
         schedule.setDate(this.getDate());
-        schedule.setSkills(this.getActivities());
         schedule.setEmployees(this.getEmployees());
-        schedule.setPets(this.getPets());
+        schedule.setCustomers(this.getCustomers());
         schedule.setId(this.getId());
         return schedule;
     }
@@ -77,11 +66,11 @@ public class ScheduleDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ScheduleDTO that = (ScheduleDTO) o;
-        return id == that.id && Objects.equals(employees, that.employees) && Objects.equals(pets, that.pets) && Objects.equals(date, that.date) && Objects.equals(activities, that.activities);
+        return id == that.id && Objects.equals(employees, that.employees) && Objects.equals(customers, that.customers) && Objects.equals(date, that.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, employees, pets, date, activities);
+        return Objects.hash(id, employees, customers, date);
     }
 }
