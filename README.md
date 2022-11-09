@@ -65,6 +65,7 @@ In addition to the included unit tests, a Postman collection has been provided.
 2. Select the `Import` button.
 3. Import the file found in this repository under `src/main/resource/Udacity.postman_collection.json`
 4. Expand the Udacity folder in postman.
+5. [Online Postman collection](https://codejutsu.postman.co/workspace/My-Workspace~b9d7d776-fd88-416a-8083-a776c4b6be62/collection/6689839-c48a5a3b-4176-4dd7-992b-bbed0f334c2c?action=share&creator=6689839)
 
 Each entry in this collection contains information in its `Body` tab if necessary and all requests should function for a completed project. Depending on your key generation strategy, you may need to edit the specific ids in these requests for your particular project.
 
