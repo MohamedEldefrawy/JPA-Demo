@@ -1,5 +1,6 @@
 package com.udacity.jdnd.course3.critter.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.udacity.jdnd.course3.critter.entity.schedule.Day;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.entity.skill.Skill;
@@ -15,8 +16,9 @@ import java.util.Set;
 public class EmployeeDTO {
     private long id;
     private String name;
-    private List<Skill> skills;
-    private Set<Schedule> schedules;
+    private Set<Skill> skills;
+    @JsonIgnore
+    private List<Schedule> schedules;
 
     private Set<Day> days;
 
@@ -36,19 +38,19 @@ public class EmployeeDTO {
         this.name = name;
     }
 
-    public List<Skill> getSkills() {
+    public Set<Skill> getSkills() {
         return skills;
     }
 
-    public void setSkills(List<Skill> skills) {
+    public void setSkills(Set<Skill> skills) {
         this.skills = skills;
     }
 
-    public Set<Schedule> getSchedules() {
+    public List<Schedule> getSchedules() {
         return schedules;
     }
 
-    public void setSchedules(Set<Schedule> schedules) {
+    public void setSchedules(List<Schedule> schedules) {
         this.schedules = schedules;
     }
 

@@ -3,7 +3,6 @@ package com.udacity.jdnd.course3.critter.service;
 import com.udacity.jdnd.course3.critter.dto.schedule.ScheduleDTO;
 import com.udacity.jdnd.course3.critter.entity.pet.Pet;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
-import com.udacity.jdnd.course3.critter.entity.skill.Skill;
 import com.udacity.jdnd.course3.critter.entity.user.Customer;
 import com.udacity.jdnd.course3.critter.entity.user.Employee;
 import com.udacity.jdnd.course3.critter.repository.*;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -57,20 +55,21 @@ public class ScheduleService {
         Optional<Pet> selectedPetOptional = this.petRepository.findById(petId);
         if (!selectedPetOptional.isPresent())
             return new ArrayList<>();
-        Iterable<Schedule> schedulesList = this.scheduleRepository.findAll();
+        Customer customer = this.customerRepository.findCustomerByPetsContaining(selectedPetOptional.get());
+        List<Schedule> schedules = this.scheduleRepository.findScheduleByCustomersContaining(customer);
         List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
 
-        schedulesList.forEach(schedule -> {
-            if (schedule.getCustomers().stream().map(Customer::getPets).collect(Collectors.toList())
-                    .contains(selectedPetOptional.get()))
-                scheduleDTOS.add(schedule.toScheduleDto());
+        schedules.forEach(schedule -> {
+            scheduleDTOS.add(schedule.toScheduleDto());
         });
         return scheduleDTOS;
     }
 
     public List<ScheduleDTO> findSchedulesByEmployeeId(Long employeeId) {
-        Employee selectedEmployee = this.employeeRepository.findById(employeeId).get();
-        List<Schedule> scheduleList = this.scheduleRepository.findSchedulesByEmployeesContaining(selectedEmployee);
+        Optional<Employee> optionalEmployee = this.employeeRepository.findById(employeeId);
+        if (!optionalEmployee.isPresent())
+            return new ArrayList<>();
+        List<Schedule> scheduleList = this.scheduleRepository.findSchedulesByEmployeesContaining(optionalEmployee.get());
         List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
         scheduleList.forEach(schedule -> {
             scheduleDTOS.add(schedule.toScheduleDto());
@@ -80,6 +79,16 @@ public class ScheduleService {
     }
 
     public List<ScheduleDTO> findSchedulesByCustomerId(Long customerId) {
-        throw new ExceptionInInitializerError();
+        Optional<Customer> customerOptional = this.customerRepository.findById(customerId);
+        if (!customerOptional.isPresent())
+            return new ArrayList<>();
+        List<Schedule> schedules = this.scheduleRepository.findScheduleByCustomersContaining(customerOptional.get());
+        List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
+
+        schedules.forEach(schedule -> {
+            scheduleDTOS.add(schedule.toScheduleDto());
+        });
+
+        return scheduleDTOS;
     }
 }

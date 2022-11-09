@@ -1,5 +1,6 @@
 package com.udacity.jdnd.course3.critter.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.udacity.jdnd.course3.critter.dto.user.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.entity.schedule.Day;
 import com.udacity.jdnd.course3.critter.entity.schedule.Schedule;
@@ -20,10 +21,11 @@ public class Employee extends User {
             joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "skill_id", referencedColumnName = "id")}
     )
-    private List<Skill> skills = new java.util.ArrayList<>();
+    private Set<Skill> skills;
 
     @ManyToMany(mappedBy = "employees")
-    private Set<Schedule> schedules;
+    @JsonIgnore
+    private List<Schedule> schedules;
 
     @ManyToMany
     @JoinTable(
@@ -33,11 +35,11 @@ public class Employee extends User {
     )
     private Set<Day> days;
 
-    public List<Skill> getSkills() {
+    public Set<Skill> getSkills() {
         return skills;
     }
 
-    public void setSkills(List<Skill> skills) {
+    public void setSkills(Set<Skill> skills) {
         this.skills = skills;
     }
 
@@ -53,11 +55,11 @@ public class Employee extends User {
         return employeeDTO;
     }
 
-    public Set<Schedule> getSchedules() {
+    public List<Schedule> getSchedules() {
         return schedules;
     }
 
-    public void setSchedules(Set<Schedule> schedule) {
+    public void setSchedules(List<Schedule> schedule) {
         this.schedules = schedule;
     }
 

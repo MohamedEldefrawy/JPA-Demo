@@ -28,7 +28,7 @@ public class EmployeeService {
     }
 
     public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
-        List<Skill> skills = new ArrayList<>();
+        Set<Skill> skills = new HashSet<>();
         employeeDTO.getSkills().forEach(skill -> skills.add(this.skillRepository.findByName(skill.getName())));
         Employee newEmployee = employeeDTO.toEmployee();
         newEmployee.setSkills(skills);
