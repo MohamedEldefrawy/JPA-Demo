@@ -33,7 +33,11 @@ public class ScheduleService {
         Set<Customer> selectedCustomers = new HashSet<>();
 
         scheduleDTO.getEmployees().forEach(employee -> selectedEmployees.add(this.employeeRepository.findById(employee.getId()).get()));
-        scheduleDTO.getCustomers().forEach(pet -> selectedCustomers.add(this.customerRepository.findById(pet.getId()).get()));
+        scheduleDTO.getCustomers().forEach(customer -> {
+            Customer selectedCustpmer = this.customerRepository.findById(customer.getId()).get();
+            selectedCustpmer.setPets(customer.getPets());
+            selectedCustomers.add(selectedCustpmer);
+        });
         scheduleDTO.setCustomers(selectedCustomers);
         scheduleDTO.setEmployees(selectedEmployees);
         Schedule newSchedule = scheduleDTO.toSchedule();

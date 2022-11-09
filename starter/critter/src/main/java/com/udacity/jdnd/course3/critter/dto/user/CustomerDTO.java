@@ -58,6 +58,7 @@ public class CustomerDTO {
         customer.setNotes(this.getNotes());
         customer.setPhoneNumber(this.getPhoneNumber());
         customer.setSchedule(this.getSchedule());
+        customer.setPets(this.getPets());
 
         return customer;
     }

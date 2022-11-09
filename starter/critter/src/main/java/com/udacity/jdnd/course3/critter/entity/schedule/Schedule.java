@@ -30,7 +30,7 @@ public class Schedule {
             joinColumns = {@JoinColumn(name = "customer_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")}
     )
-    private Set<Customer> customers;
+    private Set<Customer> customers = new java.util.LinkedHashSet<>();
 
     private LocalDate date;
 
@@ -61,6 +61,7 @@ public class Schedule {
     public ScheduleDTO toScheduleDto() {
         ScheduleDTO scheduleDTO = new ScheduleDTO();
         scheduleDTO.setEmployees(this.getEmployees());
+        scheduleDTO.setCustomers(this.getCustomers());
         scheduleDTO.setId(this.getId());
         scheduleDTO.setDate(this.getDate());
         return scheduleDTO;

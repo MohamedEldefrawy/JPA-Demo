@@ -191,9 +191,9 @@ public class CritterFunctionalTest {
         emp2.setDays(Sets.newHashSet(this.days.get(2), this.days.get(3), this.days.get(4)));
         emp3.setDays(Sets.newHashSet(this.days.get(4), this.days.get(5), this.days.get(6)));
 
-        emp1.setSkills(Lists.newArrayList(this.skills.get(0), this.skills.get(1)));
-        emp2.setSkills(Lists.newArrayList(this.skills.get(1), this.skills.get(2)));
-        emp3.setSkills(Lists.newArrayList(this.skills.get(3)));
+        emp1.setSkills(Sets.newHashSet(this.skills.get(0), this.skills.get(1)));
+        emp2.setSkills(Sets.newHashSet(this.skills.get(1), this.skills.get(2)));
+        emp3.setSkills(Sets.newHashSet(this.skills.get(3)));
 
         EmployeeDTO emp1n = userController.saveEmployee(emp1).getBody();
         EmployeeDTO emp2n = userController.saveEmployee(emp2).getBody();
@@ -234,10 +234,8 @@ public class CritterFunctionalTest {
 
         LocalDate date = LocalDate.of(2019, 12, 25);
         assert petDTO != null;
-        Set<Pet> petList = Sets.newHashSet(petDTO.toPet());
         assert employeeDTO != null;
         Set<Employee> employeeList = Sets.newHashSet(employeeDTO.toEmployee());
-        List<Skill> skillSet = Lists.newArrayList(this.skills.get(0));
         Set<Customer> customers = new HashSet<>();
         customers.add(customerDTO.toCustomer());
 
@@ -247,13 +245,13 @@ public class CritterFunctionalTest {
 
         Assertions.assertEquals(scheduleDTO.getDate(), date);
         Assertions.assertEquals(scheduleDTO.getEmployees(), employeeList);
-        Assertions.assertEquals(scheduleDTO.getCustomers(), petList);
+        Assertions.assertEquals(scheduleDTO.getCustomers(), customers);
     }
 
     @Test
     public void testFindScheduleByEntities() {
-        ScheduleDTO sched1 = populateSchedule(1, 2, LocalDate.of(2019, 12, 25), Lists.newArrayList(this.skills.get(0), this.skills.get(2)));
-        ScheduleDTO sched2 = populateSchedule(3, 1, LocalDate.of(2019, 12, 26), Lists.newArrayList(this.skills.get(3)));
+        ScheduleDTO sched1 = populateSchedule(1, 2, LocalDate.of(2019, 12, 25), Sets.newHashSet(this.skills.get(0), this.skills.get(2)));
+        ScheduleDTO sched2 = populateSchedule(3, 1, LocalDate.of(2019, 12, 26), Sets.newHashSet(this.skills.get(3)));
 
         //add a third schedule that shares some employees and pets with the other schedules
         ScheduleDTO sched3 = new ScheduleDTO();
@@ -278,20 +276,20 @@ public class CritterFunctionalTest {
         compareSchedules(sched2, scheds2e.get(0));
 
         //Pet 1 is only in schedule 1
-        List<ScheduleDTO> scheds1p = scheduleController.getScheduleForPet(sched1.getCustomers().toArray(new Pet[0])[0].getId()).getBody();
+        List<ScheduleDTO> scheds1p = scheduleController.getScheduleForPet(sched1.getCustomers().stream().iterator().next().getPets().get(0).getId()).getBody();
         compareSchedules(sched1, scheds1p.get(0));
 
         //Pet from schedule 2 is in both schedules 2 and 3
-        List<ScheduleDTO> scheds2p = scheduleController.getScheduleForPet(sched2.getCustomers().toArray(new Pet[0])[0].getId()).getBody();
+        List<ScheduleDTO> scheds2p = scheduleController.getScheduleForPet(sched2.getCustomers().stream().iterator().next().getPets().get(0).getId()).getBody();
         compareSchedules(sched2, scheds2p.get(0));
         compareSchedules(sched3, scheds2p.get(1));
 
         //Owner of the first pet will only be in schedule 1
-        List<ScheduleDTO> scheds1c = scheduleController.getScheduleForCustomer(Objects.requireNonNull(userController.getOwnerByPet(sched1.getCustomers().toArray(new Pet[0])[0].getId()).getBody()).getId()).getBody();
+        List<ScheduleDTO> scheds1c = scheduleController.getScheduleForCustomer(Objects.requireNonNull(userController.getOwnerByPet(sched1.getCustomers().stream().iterator().next().getPets().get(0).getId()).getBody()).getId()).getBody();
         compareSchedules(sched1, scheds1c.get(0));
 
         //Owner of pet from schedule 2 will be in both schedules 2 and 3
-        List<ScheduleDTO> scheds2c = scheduleController.getScheduleForCustomer(Objects.requireNonNull(userController.getOwnerByPet(sched2.getCustomers().toArray(new Pet[0])[0].getId()).getBody()).getId()).getBody();
+        List<ScheduleDTO> scheds2c = scheduleController.getScheduleForCustomer(Objects.requireNonNull(userController.getOwnerByPet(sched2.getCustomers().stream().iterator().next().getPets().get(0).getId()).getBody()).getId()).getBody();
         compareSchedules(sched2, scheds2c.get(0));
         compareSchedules(sched3, scheds2c.get(1));
     }
@@ -301,14 +299,15 @@ public class CritterFunctionalTest {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setName("TestEmployee");
 
-        employeeDTO.setSkills(Lists.newArrayList(this.skills.get(0), this.skills.get(1)));
+        employeeDTO.setSkills(Sets.newHashSet(this.skills.get(0), this.skills.get(1)));
         return employeeDTO;
     }
 
     private static CustomerDTO createCustomerDTO() {
         CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setName("TestEmployee");
+        customerDTO.setName("TestCustomer");
         customerDTO.setPhoneNumber("123-456-789");
+        customerDTO.setNotes("TestCustomerNotes");
         return customerDTO;
     }
 
@@ -334,7 +333,7 @@ public class CritterFunctionalTest {
         return scheduleDTO;
     }
 
-    private ScheduleDTO populateSchedule(int numEmployees, int numPets, LocalDate date, List<Skill> activities) {
+    private ScheduleDTO populateSchedule(int numEmployees, int numPets, LocalDate date, Set<Skill> activities) {
         Set<Employee> employees = IntStream.range(0, numEmployees)
                 .mapToObj(i -> createEmployeeDTO())
                 .map(e -> {
@@ -352,6 +351,7 @@ public class CritterFunctionalTest {
                     return Objects.requireNonNull(petController.savePet(p).getBody()).toPet();
                 }).collect(Collectors.toSet());
         Set<Customer> customers = new HashSet<>();
+        customerDTO.setPets(Lists.newArrayList(pets));
         customers.add(customerDTO.toCustomer());
         return scheduleController.createSchedule(createScheduleDTO(employees, customers, date)).getBody();
     }

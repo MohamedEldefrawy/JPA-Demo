@@ -72,12 +72,13 @@ public class Customer extends User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Customer)) return false;
+        if (!super.equals(o)) return false;
         Customer customer = (Customer) o;
-        return Objects.equals(getPhoneNumber(), customer.getPhoneNumber()) && Objects.equals(getNotes(), customer.getNotes()) && Objects.equals(getPets(), customer.getPets()) && Objects.equals(getSchedule(), customer.getSchedule());
+        return getPhoneNumber().equals(customer.getPhoneNumber()) && getNotes().equals(customer.getNotes());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPhoneNumber(), getNotes(), getPets(), getSchedule());
+        return Objects.hash(super.hashCode(), getPhoneNumber(), getNotes());
     }
 }

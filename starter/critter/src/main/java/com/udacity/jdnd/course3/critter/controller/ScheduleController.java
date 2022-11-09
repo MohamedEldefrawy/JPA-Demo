@@ -43,7 +43,6 @@ public class ScheduleController {
     @GetMapping("/pet/{petId}")
     public ResponseEntity<List<ScheduleDTO>> getScheduleForPet(@PathVariable long petId) {
         List<ScheduleDTO> scheduleDTOS = this.scheduleService.findSchedulesByPetId(petId);
-        List<ScheduleDTO> schedules = this.scheduleService.getSchedules();
         if (scheduleDTOS.size() == 0)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(scheduleDTOS, HttpStatus.OK);
